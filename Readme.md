@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Георгий Мкртчян](https://up.htmlacademy.ru/javascript/11/user/60370).
-* Наставник: `Неизвестно`.
+* Наставник: [Дмитрий Харин] (https://htmlacademy.ru/profile/dihar).
 
 ---
 
