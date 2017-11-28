@@ -70,8 +70,8 @@ var OFFERS = getOffers(8);
 
 // Task 2
 function toggleElement(selector, className) {
-  var MAP = document.querySelector(selector); // принимает на вход селекторы типа '.className' (string)
-  MAP.classList.remove(className); // принимает на вход класс типа 'className' (string)
+  var map = document.querySelector(selector); // принимает на вход селекторы типа '.className' (string)
+  map.classList.remove(className); // принимает на вход класс типа 'className' (string)
 }
 
 toggleElement('.map', 'map--faded');
@@ -81,9 +81,9 @@ function getGeneratedPins(offers) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offers.length; i++) {
     var newButton = document.createElement('button');
-    newButton.style.position = 'absolute'; // Чем заменить absolute? по заданию его добавлять не надо, но не знаю, как сделать иначе
     newButton.style.left = offers[i].location.x + 'px';
     newButton.style.top = offers[i].location.y + 'px';
+    newButton.className = 'map__pin';
 
     // Добавляет аватар пользователя, устанавливает стили
     var pinImage = document.createElement('img');
@@ -120,9 +120,8 @@ function generateFeatures(itemFeatureList) {
 
 function generateCard(offerNumber) {
 
-  var articleTemplate = document.querySelector('template').content.querySelector('article.map__card');
+  var template = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
 
-  var template = articleTemplate.cloneNode(true);
   template.querySelector.className += 'popup';
   template.querySelector('.popup__avatar').src = offerNumber.author;
   template.querySelector('h3').innerHTML = offerNumber.offer.title;
