@@ -144,22 +144,3 @@ function addCartToMap(cart) {
 }
 
 addCartToMap(firstCart);
-
-/* ОБРАБОТКА СОБЫТИЙ */
-
-function mapIsFaded() {
-  var map = document.querySelector('.map');
-  map.className = 'map map--faded';
-}
-
-mapIsFaded();
-
-function fieldsetIsDisabled() {
-  var fieldset = document.getElementsByTagName('fieldset');
-  for (var i = 0; i < fieldset.length; i++) {
-    fieldset[i].setAttribute('disabled', 'disabled');
-  }
-}
-
-fieldsetIsDisabled();
-
