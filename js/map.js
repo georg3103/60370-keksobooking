@@ -1,10 +1,11 @@
 'use strict';
 // массив с фразами
-var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 // массив с временем
-var TIME = ['12:00', '13:00', '14:00'];
+var LIST_CHECK_IN = ['12:00', '13:00', '14:00'];
+var LIST_CHECK_OUT = ['12:00', '13:00', '14:00'];
 // массив с типом жилья
-var TYPE = ['flat', 'house', 'bungalo'];
+var LIST_APARTMENTS_TYPES = ['flat', 'house', 'bungalo'];
 // массив с типом жилья
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
@@ -27,13 +28,13 @@ function getRandomArbitrary(min, max) {
 function getOffers(numberObj) {
 
   // сделать массив с количеством юзеров
-  var userNum = []; // camelCase, т.к. это переменная, а не константа
+  var userNumList = []; // camelCase, т.к. это переменная, а не константа
 
   for (var i = 1; i <= numberObj; i++) {
     if (i < 10) {
-      userNum.push('0' + i.toString());
+      userNumList.push('0' + i.toString());
     } else {
-      userNum.push(i.toString());
+      userNumList.push(i.toString());
     }
   }
 
@@ -42,16 +43,16 @@ function getOffers(numberObj) {
 
   for (var j = 0; j < numberObj; j++) {
     offerList.push({});
-    offerList[j].author = 'img/avatars/user' + userNum[j].toString() + '.png'; // avatar
+    offerList[j].author = 'img/avatars/user' + userNumList[j].toString() + '.png'; // avatar
 
     offerList[j].offer = {};
-    offerList[j].offer.title = TITLE[j]; // title
+    offerList[j].offer.title = TITLES[j]; // title
     offerList[j].offer.price = getRandomArbitrary(1000, 1000000); // price
-    offerList[j].offer.type = TYPE[getRandomArbitrary(0, 2)]; // type
+    offerList[j].offer.type = LIST_APARTMENTS_TYPES[getRandomArbitrary(0, 2)]; // type
     offerList[j].offer.rooms = getRandomArbitrary(1, 5); // rooms
     offerList[j].offer.guests = getRandomArbitrary(1, 5); // guests
-    offerList[j].offer.checkin = TIME[getRandomArbitrary(0, 2)]; // checkin
-    offerList[j].offer.checkout = TIME[getRandomArbitrary(0, 2)]; // checkout
+    offerList[j].offer.checkin = LIST_CHECK_IN[getRandomArbitrary(0, 2)]; // checkin
+    offerList[j].offer.checkout = LIST_CHECK_OUT[getRandomArbitrary(0, 2)]; // checkout
     offerList[j].offer.features = getFeatures(FEATURES); // features
     offerList[j].offer.description = '';
     offerList[j].offer.photos = [];
@@ -122,7 +123,6 @@ function generateCard(offerNumber) {
 
   var template = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
 
-  template.querySelector.className += 'popup';
   template.querySelector('.popup__avatar').src = offerNumber.author;
   template.querySelector('h3').innerHTML = offerNumber.offer.title;
   template.querySelector('p small').textContent = offerNumber.offer.address;
@@ -137,6 +137,8 @@ function generateCard(offerNumber) {
   return template;
 }
 
+console.log(generateCard(OFFERS[0]));
+
 var firstCart = generateCard(OFFERS[0]);
 
 function addCartToMap(cart) {
@@ -144,3 +146,22 @@ function addCartToMap(cart) {
 }
 
 addCartToMap(firstCart);
+
+/* ОБРАБОТКА СОБЫТИЙ */
+
+function mapIsFaded() {
+  var map = document.querySelector('.map');
+  map.className = 'map map--faded';
+}
+
+mapIsFaded();
+
+function fieldsetIsDisabled() {
+  var fieldset = document.getElementsByTagName('fieldset');
+  for (var i = 0; i < fieldset.length; i++) {
+    fieldset[i].setAttribute('disabled', 'disabled');
+  }
+}
+
+fieldsetIsDisabled();
+
