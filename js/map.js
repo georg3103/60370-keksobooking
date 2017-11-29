@@ -137,8 +137,6 @@ function generateCard(offerNumber) {
   return template;
 }
 
-console.log(generateCard(OFFERS[0]));
-
 var firstCart = generateCard(OFFERS[0]);
 
 function addCartToMap(cart) {
