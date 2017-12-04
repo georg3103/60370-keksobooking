@@ -1,4 +1,6 @@
 'use strict';
+var KEYBOARD_KEY_ENTER = 13;
+var KEYBOARD_KEY_ESC = 27;
 // массив с фразами
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 // массив с временем
@@ -6,7 +8,7 @@ var LIST_CHECK_IN = ['12:00', '13:00', '14:00'];
 var LIST_CHECK_OUT = ['12:00', '13:00', '14:00'];
 // массив с типом жилья
 var LIST_APARTMENTS_TYPES = ['flat', 'house', 'bungalo'];
-// массив с типом жилья
+// массив с услугами
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 var randomBoolean = function () {
@@ -25,12 +27,12 @@ function getRandomArbitrary(min, max) {
 }
 
 // функция, генерирующая объект
-function getOffers(numberObj) {
+function getOffers(amount) {
 
   // сделать массив с количеством юзеров
   var userNumList = []; // camelCase, т.к. это переменная, а не константа
 
-  for (var i = 1; i <= numberObj; i++) {
+  for (var i = 1; i <= amount; i++) {
     if (i < 10) {
       userNumList.push('0' + i.toString());
     } else {
@@ -41,7 +43,7 @@ function getOffers(numberObj) {
   // массив с объектами
   var offerList = [];
 
-  for (var j = 0; j < numberObj; j++) {
+  for (var j = 0; j < amount; j++) {
     offerList.push({});
     offerList[j].author = 'img/avatars/user' + userNumList[j].toString() + '.png'; // avatar
 
@@ -66,8 +68,11 @@ function getOffers(numberObj) {
   return offerList;
 }
 
+// console.log('getOffers(8)');
+// console.log(getOffers(8));
+
 // массив с предложениями жилья
-var OFFERS = getOffers(8);
+// var OFFERS = getOffers(8);
 
 // Task 2
 function toggleElement(selector, className) {
@@ -77,8 +82,15 @@ function toggleElement(selector, className) {
 
 toggleElement('.map', 'map--faded');
 
+
+// var LIST_OFFERS = [];
+
 // Task 3
-function getGeneratedPins(offers) {
+function getGeneratedPins(listOfOffers) {
+  // var offers = getOffers(amount);
+  // LIST_OFFERS = offers;
+
+  var offers = listOfOffers;
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offers.length; i++) {
     var newButton = document.createElement('button');
@@ -98,17 +110,16 @@ function getGeneratedPins(offers) {
   return fragment;
 }
 
-var GeneratedPins = getGeneratedPins(OFFERS);
+// var GeneratedPins = getGeneratedPins(OFFERS);
 
 // Task 4
-var mapPin = document.querySelector('.map__pins');
-
-function addPinsToMap(pins, className) {
-  document.querySelector(className); // на вход принимает класс вида '.className' (String)
-  mapPin.appendChild(pins); // на вход принимает document-fragment
+function addPinsToMap(listOfOffers) { // было (pinsAmount)
+  var mapPin = document.querySelector('.map__pins');
+  // var pins = getGeneratedPins(listOfOffers); // было (pinsAmount)
+  mapPin.appendChild(listOfOffers); // на вход принимает document-fragment
 }
 
-addPinsToMap(GeneratedPins, '.map__pins');
+// addPinsToMap(8);
 
 // Task 5
 function generateFeatures(itemFeatureList) {
@@ -119,7 +130,9 @@ function generateFeatures(itemFeatureList) {
   return listOfli;
 }
 
-function generateCard(offerNumber) {
+function generateCard(postData, cartNumber) {
+
+  var offerNumber = postData[cartNumber];
 
   var template = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
 
@@ -137,10 +150,198 @@ function generateCard(offerNumber) {
   return template;
 }
 
-var firstCart = generateCard(OFFERS[0]);
+// var firstCart = generateCard(0);
 
-function addCartToMap(cart) {
+function addCartToMap(listOfOffers, cartNumber) {
+  var cart = generateCard(listOfOffers, cartNumber);
+  var mapPin = document.querySelector('.map__pins');
   return mapPin.appendChild(cart);
 }
 
-addCartToMap(firstCart);
+// addCartToMap(2);
+
+/* ОБРАБОТКА СОБЫТИЙ */
+
+function initInterface() {
+  var map = document.querySelector('.map');
+  var form = document.querySelector('.notice__form');
+  var fieldset = document.getElementsByTagName('fieldset');
+  var pinMain = map.querySelector('.map__pin--main');
+  var pins = map.querySelector('.map__pins');
+
+  var postData = [];
+
+  // Карта затемнена (добавлен класс map--faded)
+  mapToggle(map);
+  // Форма неактивна (добавлен класс notice__form--disabled, все поля формы недоступны)
+  fieldsetsToggle(fieldset, 'disabled');
+  // Активация формы и карты
+  pinMain.addEventListener('mouseup', function () {
+    // debugger;
+    // Карта активна
+    mapToggle(map);
+    // добавляем новые и удаляем старые пины
+    pinsToggle();
+    // Активация формы
+    formToggle(form);
+    fieldsetsToggle(fieldset, 'able');
+    // добавляем карточку слева по умолчанию, чтобы проверить, что все работает
+
+  });
+
+  // для элемента добавлен/убран класс map--faded
+  function mapToggle(element) {
+    element.classList.toggle('map--faded');
+  }
+
+  // для элемента добавлен/убран класс map--faded
+  function formToggle(element) {
+    element.classList.toggle('notice__form--disabled');
+  }
+
+  function removeChildNodes(node, startPosition) {
+    if (!node) {
+      return;
+    }
+    while (node.children[startPosition]) {
+      node.removeChild(node.children[startPosition]);
+    }
+  }
+
+  // убираем сгенерированные пины
+  function removePins(pinNodes) {
+    removeChildNodes(pinNodes, 2);
+  }
+
+  function showPins(amount) {
+    postData = getOffers(amount);
+    var posts = getGeneratedPins(postData);
+    console.log(postData);
+    addPinsToMap(posts);
+  }
+
+  function pinsToggle() {
+    if (map.classList.contains('map--faded')) {
+      removePins(pins);
+    } else {
+      // addPinsToMap(8);
+      showPins(8);
+    }
+  }
+
+  // у элемента убирается/добавляется аттрибут disabled
+  function fieldsetsToggle(element, flag) {
+    if (flag === 'disabled') {
+      for (var i = 0; i < element.length; i++) {
+        element[i].setAttribute('disabled', 'disabled');
+      }
+    }
+    if (flag === 'able') {
+      for (var j = 0; j < element.length; j++) {
+        element[j].removeAttribute('disabled', 'disabled');
+      }
+    }
+  }
+
+  // ДОБАВЛЯЕМ Показ/скрытие карточки объявления по нажатию на пин
+
+  // function chooseCart() {
+
+  // }
+
+  pins.addEventListener('click', function (e) {
+    var target = e.target;
+    if (target.parentNode.classList.contains('map__pin--main')) {
+      return;
+    }
+    if (target.parentNode.classList.contains('map__pin')) {
+      target = target.parentNode;
+    }
+    else {
+      return;
+    }
+    console.log(target.tagName);
+    processPin(target);
+  });
+
+  function processPin(pin) {
+    // удаляем классы со старых пинов
+    deactivatePins();
+    // удаляем дубликаты объявлений слева (popups)
+    removePopups();
+    // добавляем класс map__pin--active выбранному пину
+    activatePin(pin);
+    // находим номер порядковый номер пина в массиве postData
+    getPostNumber(pin);
+    // выводим объявление слева
+    addCartToMap(postData, getPostNumber(pin));
+  }
+
+  function activatePin(target) {
+    if (target.classList.contains('map__pin--main')) { // присваивать класс map__pin--active главному пользователю не надо
+      return;
+    } else {
+      target.classList.add('map__pin--active');
+    }
+  }
+
+  function deactivatePins() {
+    Array.from(pins.children).forEach(function (pin) {
+      deactivatePin(pin);
+    });
+  }
+
+  function deactivatePin(pin) {
+    if (pin.classList.contains('map__pin')) {
+      pin.classList.remove('map__pin--active');
+    } else {
+      return;
+    }
+  }
+
+  function getPostNumber(target) {
+    var coordinateX = parseInt(target.style.left, 10);
+    var coordinateY = parseInt(target.style.top, 10);
+
+    console.log('Парсим переданную ноду');
+    console.log(coordinateX);
+    console.log(coordinateY);
+
+    // Находим данные для шаблона в массиве Pin'ов по коордиинатам х и у
+    var postInfo = getPostBylocation(coordinateX, coordinateY);
+    console.log(postInfo);
+
+    return postInfo;
+  }
+
+  function getPostBylocation(x, y) {
+    for (var i = 0; i < postData.length; i++) {
+      if (postData[i].location.x === x && postData[i].location.y === y) {
+        return i;
+      }
+    }
+
+    return null;
+  }
+
+  function removePopups() {
+    Array.from(pins.children).forEach(function (item) {
+      if (item.classList.contains('popup')) {
+        item.remove();
+      }
+    });
+  }
+
+  // Закрытие попапа
+
+  pins.addEventListener('click', function (e) {
+    var target = e.target;
+    if (target.classList.contains('popup__close')) {
+      removePopups();
+      deactivatePins();
+    }
+  });
+
+}
+
+initInterface();
