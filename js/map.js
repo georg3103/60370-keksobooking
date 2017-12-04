@@ -1,4 +1,6 @@
 'use strict';
+var KEYBOARD_KEY_ENTER = 13;
+var KEYBOARD_KEY_ESC = 27;
 // массив с фразами
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 // массив с временем
@@ -144,6 +146,16 @@ function addCartToMap(listOfOffers, cartNumber) {
 
 /* ОБРАБОТКА СОБЫТИЙ */
 
+// проверка на нажатие ENTER
+function isKeyboardEnterKey(e) {
+  return KEYBOARD_KEY_ENTER === e.keyCode;
+}
+
+// проверка на нажатие ESC
+function isKeyboardEscKey(e) {
+  return KEYBOARD_KEY_ESC === e.keyCode;
+}
+
 function initInterface() {
   var map = document.querySelector('.map');
   var form = document.querySelector('.notice__form');
@@ -227,6 +239,23 @@ function initInterface() {
     processPin(target);
   });
 
+  // Открытие карточки пина по ENTER
+  pins.addEventListener('keydown', function (e) {
+    if (isKeyboardEnterKey(e)) {
+      pinClickHandler(e);
+    }
+  });
+
+  // Handler для взаимодействия пина с ENTER
+  function pinClickHandler(e) {
+    var target = e.target;
+    if (!target.classList.contains('map__pin')) {
+      return;
+    }
+
+    processPin(target);
+  }
+
   function processPin(pin) {
     // удаляем классы со старых пинов
     deactivatePins();
@@ -238,6 +267,26 @@ function initInterface() {
     getPostNumber(pin);
     // выводим объявление слева
     addCartToMap(postData, getPostNumber(pin));
+    // добавить взаимодействие по ESC
+    removePopupEscListener();
+  }
+
+  // Закрытие попапа по ESC
+  function removePopupEscListener() {
+    document.addEventListener('keydown', closePopupEscHandler);
+  }
+
+  // удаление handler закрытия попапа по ESC
+  function deactivateRemovePopupEscListener() {
+    document.removeEventListener('keydown', closePopupEscHandler);
+  }
+
+  // Закрыть попап по ESC
+  function closePopupEscHandler(e) {
+    if (isKeyboardEscKey(e)) {
+      removePopups();
+      deactivatePins();
+    }
   }
 
   function activatePin(target) {
@@ -274,6 +323,8 @@ function initInterface() {
       }
     });
   }
+
+  deactivateRemovePopupEscListener();
 
   // Закрытие попапа
 
