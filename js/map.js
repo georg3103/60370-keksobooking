@@ -1,6 +1,4 @@
 'use strict';
-var KEYBOARD_KEY_ENTER = 13;
-var KEYBOARD_KEY_ESC = 27;
 // массив с фразами
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 // массив с временем
@@ -68,12 +66,6 @@ function getOffers(amount) {
   return offerList;
 }
 
-// console.log('getOffers(8)');
-// console.log(getOffers(8));
-
-// массив с предложениями жилья
-// var OFFERS = getOffers(8);
-
 // Task 2
 function toggleElement(selector, className) {
   var map = document.querySelector(selector); // принимает на вход селекторы типа '.className' (string)
@@ -82,13 +74,8 @@ function toggleElement(selector, className) {
 
 toggleElement('.map', 'map--faded');
 
-
-// var LIST_OFFERS = [];
-
 // Task 3
 function getGeneratedPins(listOfOffers) {
-  // var offers = getOffers(amount);
-  // LIST_OFFERS = offers;
 
   var offers = listOfOffers;
   var fragment = document.createDocumentFragment();
@@ -97,6 +84,9 @@ function getGeneratedPins(listOfOffers) {
     newButton.style.left = offers[i].location.x + 'px';
     newButton.style.top = offers[i].location.y + 'px';
     newButton.className = 'map__pin';
+
+    // добавляем уникальный ID
+    newButton.setAttribute('id', i);
 
     // Добавляет аватар пользователя, устанавливает стили
     var pinImage = document.createElement('img');
@@ -110,16 +100,12 @@ function getGeneratedPins(listOfOffers) {
   return fragment;
 }
 
-// var GeneratedPins = getGeneratedPins(OFFERS);
-
 // Task 4
 function addPinsToMap(listOfOffers) { // было (pinsAmount)
   var mapPin = document.querySelector('.map__pins');
   // var pins = getGeneratedPins(listOfOffers); // было (pinsAmount)
   mapPin.appendChild(listOfOffers); // на вход принимает document-fragment
 }
-
-// addPinsToMap(8);
 
 // Task 5
 function generateFeatures(itemFeatureList) {
@@ -150,15 +136,11 @@ function generateCard(postData, cartNumber) {
   return template;
 }
 
-// var firstCart = generateCard(0);
-
 function addCartToMap(listOfOffers, cartNumber) {
   var cart = generateCard(listOfOffers, cartNumber);
   var mapPin = document.querySelector('.map__pins');
   return mapPin.appendChild(cart);
 }
-
-// addCartToMap(2);
 
 /* ОБРАБОТКА СОБЫТИЙ */
 
@@ -172,65 +154,51 @@ function initInterface() {
   var postData = [];
 
   // Карта затемнена (добавлен класс map--faded)
-  mapToggle(map);
+  mapIsFaded(map);
   // Форма неактивна (добавлен класс notice__form--disabled, все поля формы недоступны)
-  fieldsetsToggle(fieldset, 'disabled');
+  fieldsetsStatus(fieldset, 'disabled');
   // Активация формы и карты
-  pinMain.addEventListener('mouseup', function () {
-    // debugger;
+
+  function handler() { // НУЖНО ЗАДАТЬ НОРМАЛЬНОЕ НАЗВАНИЕ
     // Карта активна
-    mapToggle(map);
+    mapIsActive(map);
     // добавляем новые и удаляем старые пины
-    pinsToggle();
+    pinsAdd();
     // Активация формы
-    formToggle(form);
-    fieldsetsToggle(fieldset, 'able');
-    // добавляем карточку слева по умолчанию, чтобы проверить, что все работает
+    formActive(form);
+    fieldsetsStatus(fieldset, 'able');
+    // удаляем обработчик событий
+    pinMain.removeEventListener('mouseup', handler);
+  }
+  pinMain.addEventListener('mouseup', handler);
 
-  });
+  function mapIsFaded(element) {
+    element.classList.add('map--faded');
+  }
+
+  function mapIsActive(element) {
+    element.classList.remove('map--faded');
+  }
+
 
   // для элемента добавлен/убран класс map--faded
-  function mapToggle(element) {
-    element.classList.toggle('map--faded');
+  function formActive(element) {
+    element.classList.remove('notice__form--disabled');
   }
 
-  // для элемента добавлен/убран класс map--faded
-  function formToggle(element) {
-    element.classList.toggle('notice__form--disabled');
-  }
-
-  function removeChildNodes(node, startPosition) {
-    if (!node) {
-      return;
-    }
-    while (node.children[startPosition]) {
-      node.removeChild(node.children[startPosition]);
-    }
-  }
-
-  // убираем сгенерированные пины
-  function removePins(pinNodes) {
-    removeChildNodes(pinNodes, 2);
-  }
-
+  // добавляем пины на карту
   function showPins(amount) {
     postData = getOffers(amount);
     var posts = getGeneratedPins(postData);
-    console.log(postData);
     addPinsToMap(posts);
   }
 
-  function pinsToggle() {
-    if (map.classList.contains('map--faded')) {
-      removePins(pins);
-    } else {
-      // addPinsToMap(8);
-      showPins(8);
-    }
+  function pinsAdd() {
+    showPins(8);
   }
 
   // у элемента убирается/добавляется аттрибут disabled
-  function fieldsetsToggle(element, flag) {
+  function fieldsetsStatus(element, flag) {
     if (flag === 'disabled') {
       for (var i = 0; i < element.length; i++) {
         element[i].setAttribute('disabled', 'disabled');
@@ -245,10 +213,6 @@ function initInterface() {
 
   // ДОБАВЛЯЕМ Показ/скрытие карточки объявления по нажатию на пин
 
-  // function chooseCart() {
-
-  // }
-
   pins.addEventListener('click', function (e) {
     var target = e.target;
     if (target.parentNode.classList.contains('map__pin--main')) {
@@ -256,11 +220,10 @@ function initInterface() {
     }
     if (target.parentNode.classList.contains('map__pin')) {
       target = target.parentNode;
-    }
-    else {
+    } else {
       return;
     }
-    console.log(target.tagName);
+
     processPin(target);
   });
 
@@ -286,7 +249,7 @@ function initInterface() {
   }
 
   function deactivatePins() {
-    Array.from(pins.children).forEach(function (pin) {
+    Array.prototype.slice.call(pins.children).forEach(function (pin) {
       deactivatePin(pin);
     });
   }
@@ -300,32 +263,12 @@ function initInterface() {
   }
 
   function getPostNumber(target) {
-    var coordinateX = parseInt(target.style.left, 10);
-    var coordinateY = parseInt(target.style.top, 10);
-
-    console.log('Парсим переданную ноду');
-    console.log(coordinateX);
-    console.log(coordinateY);
-
-    // Находим данные для шаблона в массиве Pin'ов по коордиинатам х и у
-    var postInfo = getPostBylocation(coordinateX, coordinateY);
-    console.log(postInfo);
-
-    return postInfo;
-  }
-
-  function getPostBylocation(x, y) {
-    for (var i = 0; i < postData.length; i++) {
-      if (postData[i].location.x === x && postData[i].location.y === y) {
-        return i;
-      }
-    }
-
-    return null;
+    var postNumber = parseInt(target.id, 10);
+    return postNumber;
   }
 
   function removePopups() {
-    Array.from(pins.children).forEach(function (item) {
+    Array.prototype.slice.call(pins.children).forEach(function (item) {
       if (item.classList.contains('popup')) {
         item.remove();
       }
