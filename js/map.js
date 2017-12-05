@@ -178,7 +178,7 @@ function initInterface() {
     pinsAdd();
     // Активация формы
     formActive(form);
-    fieldsetsStatus(fieldset, 'able');
+    fieldsetsStatus(fieldset, 'anable');
     // удаляем обработчик событий
     pinMain.removeEventListener('mouseup', handler);
   }
@@ -216,7 +216,7 @@ function initInterface() {
         element[i].setAttribute('disabled', 'disabled');
       }
     }
-    if (flag === 'able') {
+    if (flag === 'anable') {
       for (var j = 0; j < element.length; j++) {
         element[j].removeAttribute('disabled', 'disabled');
       }
@@ -290,11 +290,7 @@ function initInterface() {
   }
 
   function activatePin(target) {
-    if (target.classList.contains('map__pin--main')) { // присваивать класс map__pin--active главному пользователю не надо
-      return;
-    } else {
-      target.classList.add('map__pin--active');
-    }
+    target.classList.add('map__pin--active');
   }
 
   function deactivatePins() {
