@@ -91,6 +91,8 @@ function getOffers(amount) {
     offerList[j].location.x = getRandomArbitrary(300, 900); // location.x
     offerList[j].location.y = getRandomArbitrary(100, 500); // location.y
 
+    offerList[j].id = j;
+
     offerList[j].offer.address = '' + offerList[j].location.x + ', ' + offerList[j].location.y + ''; // adress
   }
   return offerList;
@@ -116,7 +118,7 @@ function getGeneratedPins(listOfOffers) {
     newButton.className = 'map__pin';
 
     // добавляем уникальный ID
-    newButton.dataset.id = 'pin' + i;
+    newButton.dataset.id = offers[i].id + 'pin';
 
     // Добавляет аватар пользователя, устанавливает стили
     var pinImage = document.createElement('img');
@@ -253,14 +255,10 @@ function initInterface() {
     var target = e.target;
     if (target.parentNode.classList.contains('map__pin--main')) {
       return;
-    }
-    if (target.parentNode.classList.contains('map__pin')) {
+    } else if (target.parentNode.classList.contains('map__pin')) {
       target = target.parentNode;
-    } else {
-      return;
+      processPin(target);
     }
-
-    processPin(target);
   });
 
   // Открытие карточки пина по ENTER
@@ -273,11 +271,9 @@ function initInterface() {
   // Handler для взаимодействия пина с ENTER
   function pinClickHandler(e) {
     var pinNode = e.target;
-    if (!pinNode.classList.contains('map__pin')) {
-      return;
+    if (pinNode.classList.contains('map__pin')) {
+      processPin(pinNode);
     }
-
-    processPin(pinNode);
   }
 
   function processPin(pin) {
@@ -324,8 +320,6 @@ function initInterface() {
   function deactivatePin(pin) {
     if (pin.classList.contains('map__pin')) {
       pin.classList.remove('map__pin--active');
-    } else {
-      return;
     }
   }
 
@@ -341,7 +335,7 @@ function initInterface() {
   function removePopups() {
     Array.prototype.slice.call(pins.children).forEach(function (item) {
       if (item.classList.contains('popup')) {
-        item.remove();
+        pins.removeChild(item);
       }
     });
   }
