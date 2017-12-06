@@ -2,14 +2,42 @@
 var KEYBOARD_KEY_ENTER = 13;
 var KEYBOARD_KEY_ESC = 27;
 // массив с фразами
-var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var TITLES = [
+  'Большая уютная квартира',
+  'Маленькая неуютная квартира',
+  'Огромный прекрасный дворец',
+  'Маленький ужасный дворец',
+  'Красивый гостевой домик',
+  'Некрасивый негостеприимный домик',
+  'Уютное бунгало далеко от моря',
+  'Неуютное бунгало по колено в воде'
+];
 // массив с временем
-var LIST_CHECK_IN = ['12:00', '13:00', '14:00'];
-var LIST_CHECK_OUT = ['12:00', '13:00', '14:00'];
+var LIST_CHECK_IN = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+var LIST_CHECK_OUT = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
 // массив с типом жилья
-var LIST_APARTMENTS_TYPES = ['flat', 'house', 'bungalo'];
+var LIST_APARTMENTS_TYPES = [
+  'flat',
+  'house',
+  'bungalo'
+];
 // массив с услугами
-var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var FEATURES = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner'
+];
 
 var randomBoolean = function () {
   return Math.random() >= 0.5;
@@ -88,7 +116,7 @@ function getGeneratedPins(listOfOffers) {
     newButton.className = 'map__pin';
 
     // добавляем уникальный ID
-    newButton.setAttribute('id', i);
+    newButton.dataset.id = 'pin' + i;
 
     // Добавляет аватар пользователя, устанавливает стили
     var pinImage = document.createElement('img');
@@ -103,9 +131,8 @@ function getGeneratedPins(listOfOffers) {
 }
 
 // Task 4
-function addPinsToMap(listOfOffers) { // было (pinsAmount)
+function addPinsToMap(listOfOffers) {
   var mapPin = document.querySelector('.map__pins');
-  // var pins = getGeneratedPins(listOfOffers); // было (pinsAmount)
   mapPin.appendChild(listOfOffers); // на вход принимает document-fragment
 }
 
@@ -118,28 +145,28 @@ function generateFeatures(itemFeatureList) {
   return listOfli;
 }
 
-function generateCard(postData, cartNumber) {
+function generateCard(postNumber) {
 
-  var offerNumber = postData[cartNumber];
+  var offerNumber = postNumber;
 
   var template = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
 
   template.querySelector('.popup__avatar').src = offerNumber.author;
   template.querySelector('h3').innerHTML = offerNumber.offer.title;
   template.querySelector('p small').textContent = offerNumber.offer.address;
-  template.querySelector('p.popup__price').innerHTML = offerNumber.offer.price + ' &#x20bd;/ночь'; // Как сделать черезе .textContent? Проблема - выдает &#x20bd; вместо знака рубля
+  template.querySelector('p.popup__price').innerHTML = offerNumber.offer.price + ' &#x20bd;/ночь';
   template.querySelector('h4').textContent = offerNumber.offer.type;
-  template.querySelector('p:nth-of-type(3)').textContent = offerNumber.offer.rooms + ' комнаты для ' + offerNumber.offer.guests + ' гостей'; // не получается выбрать элемент
-  template.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + offerNumber.offer.checkin + ', выезд до ' + offerNumber.offer.checkout; // не получается выбрать элемент
-  template.querySelector('ul.popup__features').innerHTML = generateFeatures(offerNumber.offer.features); // неоптимальный способ, можно заменить на рекурсивную функцию
-  template.querySelector('p:nth-of-type(5)').textContent = offerNumber.offer.description; // не получается выбрать элемент
+  template.querySelector('p:nth-of-type(3)').textContent = offerNumber.offer.rooms + ' комнаты для ' + offerNumber.offer.guests + ' гостей';
+  template.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + offerNumber.offer.checkin + ', выезд до ' + offerNumber.offer.checkout;
+  template.querySelector('ul.popup__features').innerHTML = generateFeatures(offerNumber.offer.features);
+  template.querySelector('p:nth-of-type(5)').textContent = offerNumber.offer.description;
   template.querySelector('ul.popup__pictures li img').src = offerNumber.author;
 
   return template;
 }
 
-function addCartToMap(listOfOffers, cartNumber) {
-  var cart = generateCard(listOfOffers, cartNumber);
+function addCartToMap(postNumber) {
+  var cart = generateCard(postNumber);
   var mapPin = document.querySelector('.map__pins');
   return mapPin.appendChild(cart);
 }
@@ -159,7 +186,7 @@ function isKeyboardEscKey(e) {
 function initInterface() {
   var map = document.querySelector('.map');
   var form = document.querySelector('.notice__form');
-  var fieldset = document.getElementsByTagName('fieldset');
+  var fieldset = document.querySelectorAll('fieldset');
   var pinMain = map.querySelector('.map__pin--main');
   var pins = map.querySelector('.map__pins');
 
@@ -211,14 +238,11 @@ function initInterface() {
 
   // у элемента убирается/добавляется аттрибут disabled
   function fieldsetsStatus(element, flag) {
-    if (flag === 'disabled') {
-      for (var i = 0; i < element.length; i++) {
+    for (var i = 0; i < element.length; i++) {
+      if (flag === 'disabled') {
         element[i].setAttribute('disabled', 'disabled');
-      }
-    }
-    if (flag === 'anable') {
-      for (var j = 0; j < element.length; j++) {
-        element[j].removeAttribute('disabled', 'disabled');
+      } else if (flag === 'anable') {
+        element[i].removeAttribute('disabled', 'disabled');
       }
     }
   }
@@ -248,12 +272,12 @@ function initInterface() {
 
   // Handler для взаимодействия пина с ENTER
   function pinClickHandler(e) {
-    var target = e.target;
-    if (!target.classList.contains('map__pin')) {
+    var pinNode = e.target;
+    if (!pinNode.classList.contains('map__pin')) {
       return;
     }
 
-    processPin(target);
+    processPin(pinNode);
   }
 
   function processPin(pin) {
@@ -263,10 +287,8 @@ function initInterface() {
     removePopups();
     // добавляем класс map__pin--active выбранному пину
     activatePin(pin);
-    // находим номер порядковый номер пина в массиве postData
-    getPostNumber(pin);
     // выводим объявление слева
-    addCartToMap(postData, getPostNumber(pin));
+    addCartToMap(postData[getPostNumber(pin)]);
     // добавить взаимодействие по ESC
     removePopupEscListener();
   }
@@ -308,8 +330,12 @@ function initInterface() {
   }
 
   function getPostNumber(target) {
-    var postNumber = parseInt(target.id, 10);
-    return postNumber;
+    var postNumber = target.getAttribute('data-id');
+    if (postNumber.includes('pin')) {
+      postNumber = postNumber.match(/\d+/g).map(Number)[0];
+      return postNumber;
+    }
+    return null;
   }
 
   function removePopups() {
