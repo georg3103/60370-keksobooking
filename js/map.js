@@ -198,7 +198,7 @@ function initInterface() {
   fieldsetsStatus(fieldset, 'disabled');
   // Активация формы и карты
 
-  function handler() { // НУЖНО ЗАДАТЬ НОРМАЛЬНОЕ НАЗВАНИЕ
+  function mouseupHandler() { // НУЖНО ЗАДАТЬ НОРМАЛЬНОЕ НАЗВАНИЕ
     // Карта активна
     mapIsActive(map);
     // добавляем новые и удаляем старые пины
@@ -207,9 +207,9 @@ function initInterface() {
     formActive(form);
     fieldsetsStatus(fieldset, 'anable');
     // удаляем обработчик событий
-    pinMain.removeEventListener('mouseup', handler);
+    pinMain.removeEventListener('mouseup', mouseupHandler);
   }
-  pinMain.addEventListener('mouseup', handler);
+  pinMain.addEventListener('mouseup', mouseupHandler);
 
   function mapIsFaded(element) {
     element.classList.add('map--faded');
