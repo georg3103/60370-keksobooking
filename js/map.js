@@ -118,7 +118,7 @@ function getGeneratedPins(listOfOffers) {
     newButton.className = 'map__pin';
 
     // добавляем уникальный ID
-    newButton.dataset.id = offers[i].id + 'pin';
+    newButton.dataset.pinId = offers[i].id;
 
     // Добавляет аватар пользователя, устанавливает стили
     var pinImage = document.createElement('img');
@@ -324,12 +324,9 @@ function initInterface() {
   }
 
   function getPostNumber(target) {
-    var postNumber = target.getAttribute('data-id');
-    if (postNumber.includes('pin')) {
-      postNumber = postNumber.match(/\d+/g).map(Number)[0];
-      return postNumber;
-    }
-    return null;
+    var postNumber = target.dataset.pinId;
+    postNumber = parseInt(postNumber, 10);
+    return postNumber;
   }
 
   function removePopups() {
