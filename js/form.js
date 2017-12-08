@@ -5,16 +5,14 @@ var noticeForm = document.querySelector('.notice__form');
 var noticeTitle = noticeForm.querySelector('#title');
 var noticePrice = noticeForm.querySelector('#price');
 var noticeType = noticeForm.querySelector('#type');
-
+var noticeAddress = noticeForm.querySelector('#address');
 var roomNumber = noticeForm.querySelector('#room_number');
 var capacity = noticeForm.querySelector('#capacity');
 
 var timein = noticeForm.querySelector('#timein');
 var timeout = document.querySelector('#timeout');
 
-var formSubmit = noticeForm.querySelector('.form__submit');
-
-var options = capacity.querySelectorAll('option'); // added
+var options = capacity.querySelectorAll('option');
 
 var PRICE = {
   'flat': 1000,
@@ -48,19 +46,6 @@ var syncCapacityWithGuests = function () {
 
 roomNumber.addEventListener('change', syncCapacityWithGuests);
 
-var checkValidField = function (field) {
-  field.style.borderColor = '';
-
-  if (!field.validity.valid) {
-    field.style.borderColor = '#ff0000';
-  }
-};
-
-var checkNoticeForm = function () {
-  checkValidField(noticeTitle);
-  checkValidField(noticePrice);
-};
-
 var changeFieldValue = function (field, value) {
   field.value = value;
 };
@@ -73,11 +58,109 @@ var timeoutChangeHandler = function (evt) {
   changeFieldValue(timein, evt.currentTarget.value);
 };
 
-var formSubmitClickHandler = function () {
-  checkNoticeForm();
-};
-
 timein.addEventListener('change', timeinChangeHandler);
 timeout.addEventListener('change', timeoutChangeHandler);
 
-formSubmit.addEventListener('click', formSubmitClickHandler);
+var initValidators = function () {
+
+  noticeForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    // Валидация адреса, invalid event не срабатывает для readonly inputs.
+    if (!isValidAddress()) {
+      return;
+    }
+
+    noticeForm.submit();
+  });
+
+  noticeForm.addEventListener('invalid', function (evt) {
+    var fieldName = evt.target.name;
+
+    switch (fieldName) {
+      case 'price': {
+        validatePrice();
+        break;
+      }
+      case 'title': {
+        validateTitle();
+        break;
+      }
+    }
+  }, true);
+
+  // проверка адреса
+  var isValidAddress = function () {
+    errorShow(noticeAddress);
+
+    if (!noticeAddress.value.length) {
+      return false;
+    }
+    errorHide(noticeAddress);
+
+    return true;
+  };
+
+  // Проверка минимальной цены
+  var validatePrice = function () {
+    errorShow(noticePrice);
+    noticePrice.setCustomValidity('');
+
+    if (noticePrice.validity.typeMismatch) {
+      noticePrice.setCustomValidity('Цена должна быть числом!');
+    }
+    if (noticePrice.validity.valueMissing) {
+      noticePrice.setCustomValidity('Обязательное поле');
+    }
+    if (noticePrice.validity.rangeUnderflow) {
+      noticePrice.setCustomValidity('Минимальная цена - ' + noticePrice.min);
+    }
+    if (noticePrice.validity.rangeOverflow) {
+      noticePrice.setCustomValidity('Максимальная цена - ' + noticePrice.max);
+    }
+
+    if (noticePrice.validity.valid) {
+      errorHide(noticePrice);
+    }
+  };
+
+  // проверка названия
+  var validateTitle = function () {
+    noticeTitle.addEventListener('invalid', function () {
+      errorShow(noticeTitle);
+      noticeTitle.setCustomValidity('');
+
+      if (noticeTitle.validity.valueMissing) {
+        noticeTitle.setCustomValidity('Обязательное поле');
+      }
+      if (noticeTitle.validity.tooShort) {
+        noticeTitle.setCustomValidity('Минимальное количество символов - ' + noticeTitle.minLength);
+      }
+      if (noticeTitle.validity.tooLong) {
+        noticeTitle.setCustomValidity('Максимальное количество символов - ' + noticeTitle.maxLength);
+      }
+
+      if (noticeTitle.validity.valid) {
+        errorHide(noticeTitle);
+      }
+    });
+  };
+
+  // показать ошибку в инпуте
+  var errorHide = function (element) {
+    return errorShow(element, true);
+  };
+
+  // скрыть ощибку в инпуте
+  var errorShow = function (element, revertChanges) {
+    revertChanges = revertChanges || false;
+    if (revertChanges) {
+      element.style.border = '';
+      return;
+    }
+    element.style.border = '1px solid red';
+  };
+
+};
+
+initValidators();
