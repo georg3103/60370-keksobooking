@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function () {
+(function () {
 
   // Выбор всех необходимых элементов формы
   var noticeForm = document.querySelector('.notice__form');
