@@ -32,6 +32,7 @@ window.form = (function () {
 
   var syncFlatWithPrice = function () {
     noticePrice.min = PRICE[noticeType.value];
+    noticePrice.placeholder = PRICE[noticeType.value];
   };
 
   noticeType.addEventListener('change', syncFlatWithPrice);
@@ -44,6 +45,8 @@ window.form = (function () {
       }
     }
   };
+
+  syncCapacityWithGuests();
 
   roomNumber.addEventListener('change', syncCapacityWithGuests);
 
