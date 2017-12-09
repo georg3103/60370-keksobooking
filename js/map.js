@@ -14,8 +14,6 @@ window.maper = (function () {
   var pinMain = map.querySelector('.map__pin--main'); // MAPER +
   var pins = map.querySelector('.map__pins'); // MAPER +
 
-  var address = form.querySelector('#address');
-
   var postData = []; // MAPER +
 
   var mapIsFaded = function (element) {
