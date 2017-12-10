@@ -2,7 +2,7 @@
 
 window.card = (function () {
 
-  var POPUP = 'popup';
+  var POPUP_CLASS = 'popup';
 
   var generateFeatures = function (itemFeatureList) { // CARD +
     var listOfli = '';
@@ -40,7 +40,7 @@ window.card = (function () {
 
   var removePopups = function (target) { // CARD +
     Array.prototype.slice.call(target.children).forEach(function (item) {
-      if (item.classList.contains(POPUP)) {
+      if (item.classList.contains(POPUP_CLASS)) {
         target.removeChild(item);
       }
     });

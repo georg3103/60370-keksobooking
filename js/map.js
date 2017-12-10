@@ -4,9 +4,9 @@ window.maper = (function () {
 
   var NUMBER_OF_ADS = 8;
 
-  var MAP_PINS = '.map__pins';
-  var MAP_PIN = 'map__pin';
-  var MAP_PIN_MAIN = 'map__pin--main';
+  var MAP_PINS_CLASS = '.map__pins';
+  var MAP_PIN_CLASS = 'map__pin';
+  var MAP_PIN_MAIN_CLASS = 'map__pin--main';
 
   var map = document.querySelector('.map'); // MAPER +
   var form = document.querySelector('.notice__form'); // MAPER +
@@ -62,7 +62,7 @@ window.maper = (function () {
   function showPins(amount) {
     postData = window.data.getOffers(amount);
     var posts = window.pin.getGeneratedPins(postData);
-    window.pin.addPinsToMap(posts, MAP_PINS);
+    window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
   }
 
   var pinsAdd = function () {
@@ -71,9 +71,9 @@ window.maper = (function () {
 
   pins.addEventListener('click', function (e) {
     var target = e.target;
-    if (target.parentNode.classList.contains(MAP_PIN_MAIN)) {
+    if (target.parentNode.classList.contains(MAP_PIN_MAIN_CLASS)) {
       return;
-    } else if (target.parentNode.classList.contains(MAP_PIN)) {
+    } else if (target.parentNode.classList.contains(MAP_PIN_CLASS)) {
       target = target.parentNode;
       processPin(target);
     }
@@ -89,7 +89,7 @@ window.maper = (function () {
   // Handler для взаимодействия пина с ENTER
   function pinClickHandler(e) {
     var pinNode = e.target;
-    if (pinNode.classList.contains(MAP_PIN)) {
+    if (pinNode.classList.contains(MAP_PIN_CLASS)) {
       processPin(pinNode);
     }
   }
@@ -102,7 +102,7 @@ window.maper = (function () {
     // добавляем класс map__pin--active выбранному пину
     window.pin.activatePin(pin);
     // выводим объявление слева
-    window.card.addCartToMap(postData[getPostNumber(pin)], MAP_PINS);
+    window.card.addCartToMap(postData[getPostNumber(pin)], MAP_PINS_CLASS);
     // добавить взаимодействие по ESC
     removePopupEscListener();
   }
@@ -141,5 +141,7 @@ window.maper = (function () {
       window.pin.deactivatePins(pins);
     }
   });
+
+  // Перемещение главного пина по карте
 
 })();
