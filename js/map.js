@@ -156,7 +156,7 @@ window.maper = (function () {
   var setMainPinCoordinates = function (x, y) {
     pinMain.style.left = x + 'px';
     pinMain.style.top = y + 'px';
-    pinMain.style.zIndex = '100';
+    pinMain.style.zIndex = '10';
   };
 
   pinMain.addEventListener('mousedown', function (evt) {
