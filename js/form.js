@@ -1,8 +1,7 @@
 'use strict';
 
-window.form = (function () {
+(function () {
 
-  // Выбор всех необходимых элементов формы
   var noticeForm = document.querySelector('.notice__form');
   var noticeTitle = noticeForm.querySelector('#title');
   var noticePrice = noticeForm.querySelector('#price');
@@ -32,6 +31,7 @@ window.form = (function () {
 
   var syncFlatWithPrice = function () {
     noticePrice.min = PRICE[noticeType.value];
+    noticePrice.placeholder = PRICE[noticeType.value];
   };
 
   noticeType.addEventListener('change', syncFlatWithPrice);
@@ -44,6 +44,8 @@ window.form = (function () {
       }
     }
   };
+
+  syncCapacityWithGuests();
 
   roomNumber.addEventListener('change', syncCapacityWithGuests);
 
@@ -80,7 +82,6 @@ window.form = (function () {
       }
     }, true);
 
-    // Проверка минимальной цены
     var validatePrice = function () {
       errorShow(noticePrice);
       noticePrice.setCustomValidity('');
@@ -103,7 +104,6 @@ window.form = (function () {
       }
     };
 
-    // проверка названия
     var validateTitle = function () {
       noticeTitle.addEventListener('invalid', function () {
         errorShow(noticeTitle);
@@ -125,12 +125,10 @@ window.form = (function () {
       });
     };
 
-    // показать ошибку в инпуте
     var errorHide = function (element) {
       return errorShow(element, true);
     };
 
-    // скрыть ощибку в инпуте
     var errorShow = function (element, revertChanges) {
       revertChanges = revertChanges || false;
       if (revertChanges) {
