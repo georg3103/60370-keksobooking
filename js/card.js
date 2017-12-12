@@ -4,7 +4,7 @@ window.card = (function () {
 
   var POPUP_CLASS = 'popup';
 
-  var generateFeatures = function (itemFeatureList) { // CARD +
+  var generateFeatures = function (itemFeatureList) {
     var listOfli = '';
     for (var i = 0; i <= itemFeatureList.length - 1; i++) {
       listOfli += '<li class="feature feature--' + itemFeatureList[i] + '"></li>';
@@ -32,13 +32,13 @@ window.card = (function () {
     return template;
   };
 
-  var addCartToMap = function (postNumber, target) { // CARD +
+  var addCartToMap = function (postNumber, target) {
     var cart = generateCard(postNumber);
     var mapTarget = document.querySelector(target);
     return mapTarget.appendChild(cart);
   };
 
-  var removePopups = function (target) { // CARD +
+  var removePopups = function (target) {
     Array.prototype.slice.call(target.children).forEach(function (item) {
       if (item.classList.contains(POPUP_CLASS)) {
         target.removeChild(item);

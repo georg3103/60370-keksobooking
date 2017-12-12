@@ -9,7 +9,7 @@ window.pin = (function () {
     HEIGHT: 40
   };
 
-  var getGeneratedPins = function (listOfOffers) { // pin.js
+  var getGeneratedPins = function (listOfOffers) {
 
     var offers = listOfOffers;
     var fragment = document.createDocumentFragment();
@@ -19,10 +19,8 @@ window.pin = (function () {
       newButton.style.top = offers[i].location.y + 'px';
       newButton.className = MAP_PIN_CLASS;
 
-      // добавляем уникальный ID
       newButton.dataset.pinId = offers[i].id;
 
-      // Добавляет аватар пользователя, устанавливает стили
       var pinImage = document.createElement('img');
       pinImage.src = offers[i].author;
       pinImage.style.width = PIN_SIZE.WIDTH + 'px';
@@ -34,22 +32,22 @@ window.pin = (function () {
     return fragment;
   };
 
-  var addPinsToMap = function (listOfOffers, target) { // PIN +
+  var addPinsToMap = function (listOfOfferNode, target) {
     var mapTarget = document.querySelector(target);
-    mapTarget.appendChild(listOfOffers); // на вход принимает document-fragment
+    mapTarget.appendChild(listOfOfferNode);
   };
 
-  var activatePin = function (target) { // PIN +
+  var activatePin = function (target) {
     target.classList.add(MAP_PIN_ACTIVE_CLASS);
   };
 
-  var deactivatePin = function (pin) { // PIN +
+  var deactivatePin = function (pin) {
     if (pin.classList.contains(MAP_PIN_CLASS)) {
       pin.classList.remove(MAP_PIN_ACTIVE_CLASS);
     }
   };
 
-  var deactivatePins = function (target) { // PIN +
+  var deactivatePins = function (target) {
     Array.prototype.slice.call(target.children).forEach(function (pin) {
       deactivatePin(pin);
     });

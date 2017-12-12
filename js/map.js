@@ -2,19 +2,32 @@
 
 window.maper = (function () {
 
+  var LOCATION = {
+    X: {
+      MIN: 300,
+      MAX: 900
+    },
+    Y: {
+      MIN: 100,
+      MAX: 500
+    }
+  };
+
   var NUMBER_OF_ADS = 8;
 
   var MAP_PINS_CLASS = '.map__pins';
   var MAP_PIN_CLASS = 'map__pin';
   var MAP_PIN_MAIN_CLASS = 'map__pin--main';
 
-  var map = document.querySelector('.map'); // MAPER +
-  var form = document.querySelector('.notice__form'); // MAPER +
-  var fieldset = document.querySelectorAll('fieldset'); // MAPER +
-  var pinMain = map.querySelector('.map__pin--main'); // MAPER +
-  var pins = map.querySelector('.map__pins'); // MAPER +
+  var map = document.querySelector('.map');
+  var form = document.querySelector('.notice__form');
+  var fieldset = document.querySelectorAll('fieldset');
+  var pinMain = map.querySelector('.map__pin--main');
+  var pins = map.querySelector('.map__pins');
 
-  var postData = []; // MAPER +
+  var address = document.querySelector('#address');
+
+  var postData = [];
 
   var mapIsFaded = function (element) {
     element.classList.add('map--faded');
@@ -35,14 +48,14 @@ window.maper = (function () {
   fieldsetsStatus(fieldset, 'disabled');
 
   function mouseupHandler() {
-    // Карта активна
+
     mapIsActive(map);
-    // добавляем новые и удаляем старые пины
+
     pinsAdd();
-    // Активация формы
+
     formActive(form);
     fieldsetsStatus(fieldset, 'anable');
-    // удаляем обработчик событий
+
     pinMain.removeEventListener('mouseup', mouseupHandler);
   }
 
@@ -52,13 +65,10 @@ window.maper = (function () {
     element.classList.remove('map--faded');
   };
 
-
-  // для элемента добавлен/убран класс map--faded
   var formActive = function (element) {
     element.classList.remove('notice__form--disabled');
   };
 
-  // добавляем пины на карту
   function showPins(amount) {
     postData = window.data.getOffers(amount);
     var posts = window.pin.getGeneratedPins(postData);
@@ -79,14 +89,12 @@ window.maper = (function () {
     }
   });
 
-  // Открытие карточки пина по ENTER
   pins.addEventListener('keydown', function (e) {
     if (window.util.isKeyboardEnterKey(e)) {
       pinClickHandler(e);
     }
   });
 
-  // Handler для взаимодействия пина с ENTER
   function pinClickHandler(e) {
     var pinNode = e.target;
     if (pinNode.classList.contains(MAP_PIN_CLASS)) {
@@ -95,29 +103,26 @@ window.maper = (function () {
   }
 
   function processPin(pin) {
-    // удаляем классы со старых пинов
+
     window.pin.deactivatePins(pins);
-    // удаляем дубликаты объявлений слева (popups)
+
     window.card.removePopups(pins);
-    // добавляем класс map__pin--active выбранному пину
+
     window.pin.activatePin(pin);
-    // выводим объявление слева
+
     window.card.addCartToMap(postData[getPostNumber(pin)], MAP_PINS_CLASS);
-    // добавить взаимодействие по ESC
+
     removePopupEscListener();
   }
 
-  // Закрытие попапа по ESC
   function removePopupEscListener() {
     document.addEventListener('keydown', closePopupEscHandler);
   }
 
-  // удаление handler закрытия попапа по ESC
   function deactivateRemovePopupEscListener() {
     document.removeEventListener('keydown', closePopupEscHandler);
   }
 
-  // Закрыть попап по ESC
   function closePopupEscHandler(e) {
     if (window.util.isKeyboardEscKey(e)) {
       window.card.removePopups(pins);
@@ -132,8 +137,6 @@ window.maper = (function () {
 
   deactivateRemovePopupEscListener();
 
-  // Закрытие попапа
-
   pins.addEventListener('click', function (e) {
     var target = e.target;
     if (target.classList.contains('popup__close')) {
@@ -142,6 +145,58 @@ window.maper = (function () {
     }
   });
 
-  // Перемещение главного пина по карте
+  var syncFieldWithPin = function (x, y) {
+    address.value = 'x: ' + parseInt(x, 10) + ', y: ' + parseInt(y, 10);
+  };
+
+  var checkLimit = function (number, limitMin, limitMax) {
+    return Math.min(Math.max(number, limitMin), limitMax);
+  };
+
+  var setMainPinCoordinates = function (x, y) {
+    pinMain.style.left = x + 'px';
+    pinMain.style.top = y + 'px';
+    pinMain.style.zIndex = '100';
+  };
+
+  pinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var mainPinCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: mainPinCoords.x - pinMain.offsetLeft,
+        y: mainPinCoords.y - pinMain.offsetTop,
+      };
+
+      mainPinCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      var newX = checkLimit(mainPinCoords.x - shift.x, LOCATION.X.MIN, LOCATION.X.MAX);
+      var newY = checkLimit(mainPinCoords.y - shift.y, LOCATION.Y.MIN, LOCATION.Y.MAX);
+
+      setMainPinCoordinates(newX, newY);
+      syncFieldWithPin(newX, newY);
+
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
 })();

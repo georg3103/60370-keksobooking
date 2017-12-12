@@ -2,7 +2,6 @@
 
 (function () {
 
-  // Выбор всех необходимых элементов формы
   var noticeForm = document.querySelector('.notice__form');
   var noticeTitle = noticeForm.querySelector('#title');
   var noticePrice = noticeForm.querySelector('#price');
@@ -83,7 +82,6 @@
       }
     }, true);
 
-    // Проверка минимальной цены
     var validatePrice = function () {
       errorShow(noticePrice);
       noticePrice.setCustomValidity('');
@@ -106,7 +104,6 @@
       }
     };
 
-    // проверка названия
     var validateTitle = function () {
       noticeTitle.addEventListener('invalid', function () {
         errorShow(noticeTitle);
@@ -128,12 +125,10 @@
       });
     };
 
-    // показать ошибку в инпуте
     var errorHide = function (element) {
       return errorShow(element, true);
     };
 
-    // скрыть ощибку в инпуте
     var errorShow = function (element, revertChanges) {
       revertChanges = revertChanges || false;
       if (revertChanges) {

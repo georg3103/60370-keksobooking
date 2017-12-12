@@ -1,8 +1,8 @@
 'use strict';
 
 window.data = (function () {
-  // массив с фразами
-  var TITLES = [ // data.js
+
+  var TITLES = [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
     'Огромный прекрасный дворец',
@@ -12,25 +12,25 @@ window.data = (function () {
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'
   ];
-  // массив с временем
-  var LIST_CHECK_IN = [ // data.js
+
+  var LIST_CHECK_IN = [
     '12:00',
     '13:00',
     '14:00'
   ];
-  var LIST_CHECK_OUT = [ // data.js
+  var LIST_CHECK_OUT = [
     '12:00',
     '13:00',
     '14:00'
   ];
-  // массив с типом жилья
-  var LIST_APARTMENTS_TYPES = [ // data.js
+
+  var LIST_APARTMENTS_TYPES = [
     'flat',
     'house',
     'bungalo'
   ];
-  // массив с услугами
-  var FEATURES = [ // data.js
+
+  var FEATURES = [
     'wifi',
     'dishwasher',
     'parking',
@@ -39,20 +39,22 @@ window.data = (function () {
     'conditioner'
   ];
 
-  var randomBoolean = function () { // data.js
+  var randomBoolean = function () {
     return Math.random() >= 0.5;
   };
 
-  var getFeatures = function (array) { // data.js
+  var getFeatures = function (array) {
     return array.slice().sort(function () {
       return 0.5 - Math.random();
     }).filter(randomBoolean);
   };
 
-  var getOffers = function (amount) { // data.js
+  var getRandomArbitrary = window.util.getRandomArbitrary;
 
-    // сделать массив с количеством юзеров
-    var userNumList = []; // camelCase, т.к. это переменная, а не константа
+  var getOffers = function (amount) {
+
+
+    var userNumList = [];
 
     for (var i = 1; i <= amount; i++) {
       if (i < 10) {
@@ -62,32 +64,33 @@ window.data = (function () {
       }
     }
 
-    // массив с объектами
+    window.util.getRandomArray(userNumList);
+
     var offerList = [];
 
     for (var j = 0; j < amount; j++) {
       offerList.push({});
-      offerList[j].author = 'img/avatars/user' + userNumList[j].toString() + '.png'; // avatar
+      offerList[j].author = 'img/avatars/user' + userNumList[j].toString() + '.png';
 
       offerList[j].offer = {};
-      offerList[j].offer.title = TITLES[j]; // title
-      offerList[j].offer.price = window.util.getRandomArbitrary(1000, 1000000); // price
-      offerList[j].offer.type = LIST_APARTMENTS_TYPES[window.util.getRandomArbitrary(0, 2)]; // type
-      offerList[j].offer.rooms = window.util.getRandomArbitrary(1, 5); // rooms
-      offerList[j].offer.guests = window.util.getRandomArbitrary(1, 5); // guests
-      offerList[j].offer.checkin = LIST_CHECK_IN[window.util.getRandomArbitrary(0, 2)]; // checkin
-      offerList[j].offer.checkout = LIST_CHECK_OUT[window.util.getRandomArbitrary(0, 2)]; // checkout
-      offerList[j].offer.features = getFeatures(FEATURES); // features
+      offerList[j].offer.title = TITLES[j];
+      offerList[j].offer.price = getRandomArbitrary(1000, 1000000);
+      offerList[j].offer.type = LIST_APARTMENTS_TYPES[getRandomArbitrary(0, 2)];
+      offerList[j].offer.rooms = getRandomArbitrary(1, 5);
+      offerList[j].offer.guests = getRandomArbitrary(1, 5);
+      offerList[j].offer.checkin = LIST_CHECK_IN[getRandomArbitrary(0, 2)];
+      offerList[j].offer.checkout = LIST_CHECK_OUT[getRandomArbitrary(0, 2)];
+      offerList[j].offer.features = getFeatures(FEATURES);
       offerList[j].offer.description = '';
       offerList[j].offer.photos = [];
 
       offerList[j].location = {};
-      offerList[j].location.x = window.util.getRandomArbitrary(300, 900); // location.x
-      offerList[j].location.y = window.util.getRandomArbitrary(100, 500); // location.y
+      offerList[j].location.x = getRandomArbitrary(300, 900);
+      offerList[j].location.y = getRandomArbitrary(100, 500);
 
       offerList[j].id = j;
 
-      offerList[j].offer.address = '' + offerList[j].location.x + ', ' + offerList[j].location.y + ''; // adress
+      offerList[j].offer.address = '' + offerList[j].location.x + ', ' + offerList[j].location.y + '';
     }
     return offerList;
   };
