@@ -13,6 +13,11 @@ window.maper = (function () {
     }
   };
 
+  var PIN_SIZES = {
+    width: 62,
+    height: 84
+  };
+
   var NUMBER_OF_ADS = 8;
 
   var MAP_PINS_CLASS = '.map__pins';
@@ -144,6 +149,14 @@ window.maper = (function () {
       window.pin.deactivatePins(pins);
     }
   });
+  // перемещение главного Пина
+
+  var dragPinLimits = {
+    minX: LOCATION.X.MIN,
+    minY: LOCATION.Y.MIN - PIN_SIZES.height / 2,
+    maxX: LOCATION.X.MAX,
+    maxY: LOCATION.Y.MAX - PIN_SIZES.height / 2
+  };
 
   var syncFieldWithPin = function (x, y) {
     address.value = 'x: ' + parseInt(x, 10) + ', y: ' + parseInt(y, 10);
@@ -180,11 +193,11 @@ window.maper = (function () {
         y: moveEvt.clientY
       };
 
-      var newX = checkLimit(mainPinCoords.x - shift.x, LOCATION.X.MIN, LOCATION.X.MAX);
-      var newY = checkLimit(mainPinCoords.y - shift.y, LOCATION.Y.MIN, LOCATION.Y.MAX);
+      var newX = checkLimit(mainPinCoords.x - shift.x, dragPinLimits.minX, dragPinLimits.maxX);
+      var newY = checkLimit(mainPinCoords.y - shift.y, dragPinLimits.minY, dragPinLimits.maxY);
 
       setMainPinCoordinates(newX, newY);
-      syncFieldWithPin(newX, newY);
+      syncFieldWithPin(newX, newY + PIN_SIZES.height / 2);
 
     };
 
