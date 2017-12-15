@@ -21,8 +21,6 @@ window.maper = (function () {
   var NUMBER_OF_ADS = 8;
 
   var MAP_PINS_CLASS = '.map__pins';
-  var MAP_PIN_CLASS = 'map__pin';
-  var MAP_PIN_MAIN_CLASS = 'map__pin--main';
 
   var map = document.querySelector('.map');
   var form = document.querySelector('.notice__form');
