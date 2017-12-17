@@ -14,18 +14,6 @@ window.util = (function () {
     });
   };
 
-  var selectOptionValue = function (select) {
-    var selectOptions = select.querySelectorAll('option');
-    var optionValue = null;
-    var optionValues = [];
-
-    for (var i = 0; i < selectOptions.length; i++) {
-      optionValue = selectOptions[i].getAttribute('value');
-      optionValues[i] = optionValue;
-    }
-    return optionValues;
-  };
-
   var isKeyboardEnterKey = function (e) {
     return KEYBOARD_KEY_ENTER === e.keyCode;
   };
@@ -38,8 +26,7 @@ window.util = (function () {
     getRandomArbitrary: getRandomArbitrary,
     isKeyboardEnterKey: isKeyboardEnterKey,
     isKeyboardEscKey: isKeyboardEscKey,
-    getRandomArray: getRandomArray,
-    selectOptionValue: selectOptionValue
+    getRandomArray: getRandomArray
   };
 
 })();

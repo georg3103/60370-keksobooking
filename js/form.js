@@ -15,8 +15,8 @@
 
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  var timeInOptions = window.util.selectOptionValue(timeIn);
-  var timeOutOptions = window.util.selectOptionValue(timeOut);
+  var timeInOptions = ['12:00', '13:00', '14:00'];
+  var timeOutOptions = ['12:00', '13:00', '14:00'];
 
   var CAPACITY_NUMBER_VALIDATION = {
     rooms: [1, 2, 3, 100],
