@@ -7,7 +7,7 @@
 
   var type = document.querySelector('#type');
   var price = document.querySelector('#price');
-  var flatType = window.util.selectOptionValue(type);
+  var flatType = ['flat', 'bungalo', 'house', 'palace'];
   var priceValues = ['1000', '0', '5000', '10000'];
 
   var roomNumber = document.querySelector('#room_number');
@@ -18,13 +18,9 @@
   var timeInOptions = window.util.selectOptionValue(timeIn);
   var timeOutOptions = window.util.selectOptionValue(timeOut);
 
-  var capacityOptions = capacity.querySelectorAll('option');
-
-  var CAPACITY_NUMBER = {
-    '1': ['1'],
-    '2': ['1', '2'],
-    '3': ['1', '2', '3'],
-    '100': ['0']
+  var CAPACITY_NUMBER_VALIDATION = {
+    rooms: [1, 2, 3, 100],
+    guests: [1, [1, 2], [1, 2, 3], 0]
   };
 
   var syncValues = function (element, value) {
@@ -37,24 +33,11 @@
   };
 
   window.synchronizeField(timeIn, timeOut, timeInOptions, timeOutOptions, syncValues);
-
+  window.synchronizeField(timeOut, timeIn, timeOutOptions, timeInOptions, syncValues);
   window.synchronizeField(type, price, flatType, priceValues, syncPrices);
-
-  var syncCapacityWithGuests = function () {
-    for (var i = 0; i < capacityOptions.length; i++) {
-      capacityOptions[i].disabled = !CAPACITY_NUMBER[roomNumber.value].includes(capacityOptions[i].value);
-      if (!capacityOptions[i].disabled) {
-        capacity.value = capacityOptions[i].value;
-      }
-    }
-  };
-
-  syncCapacityWithGuests();
-
-  roomNumber.addEventListener('change', syncCapacityWithGuests);
+  window.synchronizeField(roomNumber, capacity, CAPACITY_NUMBER_VALIDATION.rooms, CAPACITY_NUMBER_VALIDATION.guests, window.synchronizeDisabledValues, true);
 
   var initValidators = function () {
-
 
     noticeForm.addEventListener('invalid', function (evt) {
       var fieldName = evt.target.name;
