@@ -3,69 +3,41 @@
 (function () {
 
   var noticeForm = document.querySelector('.notice__form');
-  var noticeTitle = noticeForm.querySelector('#title');
-  var noticePrice = noticeForm.querySelector('#price');
-  var noticeType = noticeForm.querySelector('#type');
+  var title = document.querySelector('#title');
 
-  var roomNumber = noticeForm.querySelector('#room_number');
-  var capacity = noticeForm.querySelector('#capacity');
+  var type = document.querySelector('#type');
+  var price = document.querySelector('#price');
+  var flatType = ['flat', 'bungalo', 'house', 'palace'];
+  var priceValues = ['1000', '0', '5000', '10000'];
 
-  var timein = noticeForm.querySelector('#timein');
-  var timeout = document.querySelector('#timeout');
+  var roomNumber = document.querySelector('#room_number');
+  var capacity = document.querySelector('#capacity');
 
-  var options = capacity.querySelectorAll('option');
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
+  var timeInOptions = ['12:00', '13:00', '14:00'];
+  var timeOutOptions = ['12:00', '13:00', '14:00'];
 
-  var PRICE = {
-    'flat': 1000,
-    'bungalo': 0,
-    'house': 5000,
-    'palace': 10000
+  var CAPACITY_NUMBER_VALIDATION = {
+    rooms: [1, 2, 3, 100],
+    guests: [1, [1, 2], [1, 2, 3], 0]
   };
 
-  var CAPACITY_NUMBER = {
-    '1': ['1'],
-    '2': ['1', '2'],
-    '3': ['1', '2', '3'],
-    '100': ['0']
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
-  var syncFlatWithPrice = function () {
-    noticePrice.min = PRICE[noticeType.value];
-    noticePrice.placeholder = PRICE[noticeType.value];
+  var syncPrices = function (element, value) {
+    element.placeholder = value;
+    element.min = value;
   };
 
-  noticeType.addEventListener('change', syncFlatWithPrice);
-
-  var syncCapacityWithGuests = function () {
-    for (var i = 0; i < options.length; i++) {
-      options[i].disabled = !CAPACITY_NUMBER[roomNumber.value].includes(options[i].value);
-      if (!options[i].disabled) {
-        capacity.value = options[i].value;
-      }
-    }
-  };
-
-  syncCapacityWithGuests();
-
-  roomNumber.addEventListener('change', syncCapacityWithGuests);
-
-  var changeFieldValue = function (field, value) {
-    field.value = value;
-  };
-
-  var timeinChangeHandler = function (evt) {
-    changeFieldValue(timeout, evt.currentTarget.value);
-  };
-
-  var timeoutChangeHandler = function (evt) {
-    changeFieldValue(timein, evt.currentTarget.value);
-  };
-
-  timein.addEventListener('change', timeinChangeHandler);
-  timeout.addEventListener('change', timeoutChangeHandler);
+  window.synchronizeField(timeIn, timeOut, timeInOptions, timeOutOptions, syncValues);
+  window.synchronizeField(timeOut, timeIn, timeOutOptions, timeInOptions, syncValues);
+  window.synchronizeField(type, price, flatType, priceValues, syncPrices);
+  window.synchronizeField(roomNumber, capacity, CAPACITY_NUMBER_VALIDATION.rooms, CAPACITY_NUMBER_VALIDATION.guests, window.synchronizeDisabledValues, true);
 
   var initValidators = function () {
-
 
     noticeForm.addEventListener('invalid', function (evt) {
       var fieldName = evt.target.name;
@@ -83,44 +55,44 @@
     }, true);
 
     var validatePrice = function () {
-      errorShow(noticePrice);
-      noticePrice.setCustomValidity('');
+      errorShow(price);
+      price.setCustomValidity('');
 
-      if (noticePrice.validity.typeMismatch) {
-        noticePrice.setCustomValidity('Цена должна быть числом!');
+      if (price.validity.typeMismatch) {
+        price.setCustomValidity('Цена должна быть числом!');
       }
-      if (noticePrice.validity.valueMissing) {
-        noticePrice.setCustomValidity('Обязательное поле');
+      if (price.validity.valueMissing) {
+        price.setCustomValidity('Обязательное поле');
       }
-      if (noticePrice.validity.rangeUnderflow) {
-        noticePrice.setCustomValidity('Минимальная цена - ' + noticePrice.min);
+      if (price.validity.rangeUnderflow) {
+        price.setCustomValidity('Минимальная цена - ' + price.min);
       }
-      if (noticePrice.validity.rangeOverflow) {
-        noticePrice.setCustomValidity('Максимальная цена - ' + noticePrice.max);
+      if (price.validity.rangeOverflow) {
+        price.setCustomValidity('Максимальная цена - ' + price.max);
       }
 
-      if (noticePrice.validity.valid) {
-        errorHide(noticePrice);
+      if (price.validity.valid) {
+        errorHide(price);
       }
     };
 
     var validateTitle = function () {
-      noticeTitle.addEventListener('invalid', function () {
-        errorShow(noticeTitle);
-        noticeTitle.setCustomValidity('');
+      title.addEventListener('invalid', function () {
+        errorShow(title);
+        title.setCustomValidity('');
 
-        if (noticeTitle.validity.valueMissing) {
-          noticeTitle.setCustomValidity('Обязательное поле');
+        if (title.validity.valueMissing) {
+          title.setCustomValidity('Обязательное поле');
         }
-        if (noticeTitle.validity.tooShort) {
-          noticeTitle.setCustomValidity('Минимальное количество символов - ' + noticeTitle.minLength);
+        if (title.validity.tooShort) {
+          title.setCustomValidity('Минимальное количество символов - ' + title.minLength);
         }
-        if (noticeTitle.validity.tooLong) {
-          noticeTitle.setCustomValidity('Максимальное количество символов - ' + noticeTitle.maxLength);
+        if (title.validity.tooLong) {
+          title.setCustomValidity('Максимальное количество символов - ' + title.maxLength);
         }
 
-        if (noticeTitle.validity.valid) {
-          errorHide(noticeTitle);
+        if (title.validity.valid) {
+          errorHide(title);
         }
       });
     };
