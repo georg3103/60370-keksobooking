@@ -57,6 +57,7 @@ window.backend = (function () {
       switch (xhr.status) {
         case 200:
           onLoad();
+          error = 'Форма отправлена!';
           break;
         case 400:
           error = 'Неверный запрос';
@@ -104,8 +105,16 @@ window.backend = (function () {
     errorBlock.style.alignItems = 'center';
     errorBlock.style.justifyContent = 'center';
     errorBlock.style.color = 'red';
+    errorBlock.style.fontSize = 20 + 'px';
+    errorBlock.style.fontWeight = 'bold';
+    errorBlock.id = 'serverStatus';
     errorBlock.textContent = message;
+
     document.body.insertAdjacentElement('afterbegin', errorBlock);
+
+    setTimeout(function () {
+      errorBlock.remove();
+    }, 3000);
   };
 
   return {
