@@ -114,4 +114,39 @@
 
   initValidators();
 
+  noticeForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    if (!formValidator()) {
+      addInvalid(noticeForm.elements);
+    }
+
+    window.backend.save(new FormData(noticeForm), function () {
+      noticeForm.reset();
+    }, window.backend.error);
+  });
+
+  noticeForm.addEventListener('change', function (event) {
+    if (event.target.checkValidity()) {
+      event.target.style.border = null;
+    }
+  });
+
+  var formValidator = function () {
+    for (var i = 0; i < noticeForm.length; i++) {
+      if (noticeForm.elements[i].checkValidity()) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  var addInvalid = function (array) {
+    for (var i = 0; i < array.length; i++) {
+      if (!array[i].validity.valid) {
+        array[i].style.border = '2px solid red';
+      }
+    }
+  };
+
 })();
