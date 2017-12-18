@@ -18,8 +18,6 @@ window.maper = (function () {
     height: 42
   };
 
-  var NUMBER_OF_ADS = 8;
-
   var MAP_PINS_CLASS = '.map__pins';
 
   var map = document.querySelector('.map');
@@ -30,7 +28,14 @@ window.maper = (function () {
 
   var address = document.querySelector('#address');
 
-  var postData = [];
+  var getData = function (data) {
+
+    var offerData = window.data.getOffers(data);
+
+    pinsAdd(offerData);
+
+    window.showCard(pins, offerData);
+  };
 
   var mapIsFaded = function (element) {
     element.classList.add('map--faded');
@@ -54,11 +59,10 @@ window.maper = (function () {
 
     mapIsActive(map);
 
-    pinsAdd();
-
-    window.showCard(pins, postData);
+    window.backend.load(getData, window.backend.error);
 
     formActive(form);
+
     fieldsetsStatus(fieldset, 'anable');
 
     pinMain.removeEventListener('mouseup', mouseupHandler);
@@ -74,14 +78,13 @@ window.maper = (function () {
     element.classList.remove('notice__form--disabled');
   };
 
-  function showPins(amount) {
-    postData = window.data.getOffers(amount);
-    var posts = window.pin.getGeneratedPins(postData);
+  function showPins(data) {
+    var posts = window.pin.getGeneratedPins(data);
     window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
   }
 
-  var pinsAdd = function () {
-    showPins(NUMBER_OF_ADS);
+  var pinsAdd = function (data) {
+    showPins(data);
   };
 
   var dragPinLimits = {

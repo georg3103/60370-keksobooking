@@ -19,10 +19,11 @@ window.pin = (function () {
       newButton.style.top = offers[i].location.y + 'px';
       newButton.className = MAP_PIN_CLASS;
 
-      newButton.dataset.pinId = offers[i].id;
+      newButton.dataset.pinId = i;
+
 
       var pinImage = document.createElement('img');
-      pinImage.src = offers[i].author;
+      pinImage.src = offers[i].author.avatar;
       pinImage.style.width = PIN_SIZE.WIDTH + 'px';
       pinImage.style.height = PIN_SIZE.HEIGHT + 'px';
       pinImage.setAttribute('draggable', false);
