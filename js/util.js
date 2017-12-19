@@ -26,7 +26,7 @@ window.util = (function () {
     getRandomArbitrary: getRandomArbitrary,
     isKeyboardEnterKey: isKeyboardEnterKey,
     isKeyboardEscKey: isKeyboardEscKey,
-    getRandomArray: getRandomArray
+    getRandomArray: getRandomArray,
   };
 
 })();

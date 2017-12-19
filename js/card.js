@@ -27,6 +27,7 @@ window.card = (function () {
     template.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + offerNumber.offer.checkin + ', выезд до ' + offerNumber.offer.checkout;
     template.querySelector('ul.popup__features').innerHTML = generateFeatures(offerNumber.offer.features);
     template.querySelector('p:nth-of-type(5)').textContent = offerNumber.offer.description;
+    template.querySelector('ul.popup__pictures').textContent = null; // вряд ли оптимальное решение, но удалось убрать ненужную картинку
 
     return template;
   };

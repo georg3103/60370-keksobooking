@@ -5,11 +5,17 @@
 
     var MAP_PINS_CLASS = '.map__pins';
     var MAP_PIN_CLASS = 'map__pin';
+    var MAP_PIN_MAIN_CLASS = 'map__pin--main';
+
 
     pins.addEventListener('click', function (e) {
-      var currentPin = e.target.closest('.' + MAP_PIN_CLASS);
-
-      processPin(currentPin);
+      var target = e.target;
+      if (target.closest('.' + MAP_PIN_MAIN_CLASS)) {
+        return;
+      } else if (target.closest('.' + MAP_PIN_CLASS)) {
+        target = target.parentNode;
+        processPin(target, postData);
+      }
     });
 
     pins.addEventListener('keydown', function (e) {
@@ -18,45 +24,46 @@
       }
     });
 
-    function pinClickHandler(e) {
+    var pinClickHandler = function (e) {
       var pinNode = e.target;
       if (pinNode.classList.contains(MAP_PIN_CLASS)) {
-        processPin(pinNode);
+        processPin(pinNode, postData);
       }
-    }
+    };
 
-    function processPin(pin) {
+    var processPin = function (targetNode, data) {
 
       window.pin.deactivatePins(pins);
 
       window.card.removePopups(pins);
 
-      window.pin.activatePin(pin);
+      window.pin.activatePin(targetNode);
 
-      window.card.addCartToMap(postData[getPostNumber(pin)], MAP_PINS_CLASS);
+      window.card.addCartToMap(data[getPostNumber(targetNode)], MAP_PINS_CLASS);
 
       removePopupEscListener();
-    }
+    };
 
-    function removePopupEscListener() {
+    var removePopupEscListener = function () {
       document.addEventListener('keydown', closePopupEscHandler);
-    }
+    };
 
-    function deactivateRemovePopupEscListener() {
+    var deactivateRemovePopupEscListener = function () {
       document.removeEventListener('keydown', closePopupEscHandler);
-    }
+    };
 
-    function closePopupEscHandler(e) {
+    var closePopupEscHandler = function (e) {
       if (window.util.isKeyboardEscKey(e)) {
         window.card.removePopups(pins);
         window.pin.deactivatePins(pins);
       }
-    }
-    function getPostNumber(target) {
+    };
+
+    var getPostNumber = function (target) {
       var postNumber = target.dataset.pinId;
       postNumber = parseInt(postNumber, 10);
       return postNumber;
-    }
+    };
 
     deactivateRemovePopupEscListener();
 

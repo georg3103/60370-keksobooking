@@ -2,9 +2,9 @@
 
 window.data = (function () {
 
-  var getOffers = function (data) {
+  var offerList = [];
 
-    var offerList = [];
+  var getOffers = function (data) {
 
     if (offerList.constructor === Array) {
       offerList = data;
@@ -13,8 +13,13 @@ window.data = (function () {
     return offerList;
   };
 
+  var getOffersList = function () {
+    return offerList.slice();
+  };
+
   return {
-    getOffers: getOffers
+    getOffers: getOffers,
+    getOffersList: getOffersList
   };
 
 })();

@@ -25,7 +25,7 @@ window.maper = (function () {
   var fieldset = document.querySelectorAll('fieldset');
   var pinMain = map.querySelector('.map__pin--main');
   var pins = map.querySelector('.map__pins');
-
+  var pinFilters = document.querySelector('.map__filters');
   var address = document.querySelector('#address');
 
   var getData = function (data) {
@@ -86,6 +86,18 @@ window.maper = (function () {
   var pinsAdd = function (data) {
     showPins(data);
   };
+
+  var filterPinsOnMap = function (event) {
+    window.pin.removePins(pins);
+    var posts = window.pin.getGeneratedPins((window.pin.getFilteredPins(event)));
+    var filterData = window.pin.getFilteredPins(event);
+    window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
+    window.showCard(pins, filterData);
+  };
+
+  pinFilters.addEventListener('change', function (ev) {
+    window.debounce(filterPinsOnMap, ev, 1000);
+  });
 
   var dragPinLimits = {
     minX: LOCATION.X.MIN,
