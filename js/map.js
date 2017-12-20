@@ -89,14 +89,15 @@ window.maper = (function () {
 
   var filterPinsOnMap = function (event) {
     window.pin.removePins(pins);
-    var posts = window.pin.getGeneratedPins((window.pin.getFilteredPins(event)));
-    var filterData = window.pin.getFilteredPins(event);
+    var filteredPins = window.pin.getFilteredPins(event);
+    var posts = window.pin.getGeneratedPins(filteredPins);
+
     window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
-    window.showCard(pins, filterData);
+    window.showCard(posts, filteredPins);
   };
 
   pinFilters.addEventListener('change', function (ev) {
-    window.debounce(filterPinsOnMap, ev, 1000);
+    window.util.debounce(filterPinsOnMap(ev), 1000);
   });
 
   var dragPinLimits = {

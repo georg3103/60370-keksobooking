@@ -4,16 +4,6 @@ window.util = (function () {
   var KEYBOARD_KEY_ENTER = 13;
   var KEYBOARD_KEY_ESC = 27;
 
-  var getRandomArbitrary = function (min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-  };
-
-  var getRandomArray = function (arr) {
-    arr.sort(function () {
-      return 0.5 - Math.random();
-    });
-  };
-
   var isKeyboardEnterKey = function (e) {
     return KEYBOARD_KEY_ENTER === e.keyCode;
   };
@@ -22,11 +12,26 @@ window.util = (function () {
     return KEYBOARD_KEY_ESC === e.keyCode;
   };
 
+  var lastTimeOut;
+
+  var debounce = function (func, interval) {
+    interval = interval || 500;
+    if (typeof func !== 'function') {
+      return;
+    }
+    if (lastTimeOut) {
+      window.clearTimeout(lastTimeOut);
+    }
+
+    lastTimeOut = window.setTimeout(function () {
+      func();
+    }, interval);
+  };
+
   return {
-    getRandomArbitrary: getRandomArbitrary,
     isKeyboardEnterKey: isKeyboardEnterKey,
     isKeyboardEscKey: isKeyboardEscKey,
-    getRandomArray: getRandomArray,
+    debounce: debounce
   };
 
 })();

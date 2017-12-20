@@ -161,6 +161,7 @@ window.pin = (function () {
     }
 
     posts = posts.filter(function (post) {
+
       if (filter.housingType && post.offer.type !== filter.housingType) {
         return false;
       }
@@ -173,23 +174,13 @@ window.pin = (function () {
       if (filter.housingGuests && post.offer.guests !== parseInt(filter.housingGuests, 10)) {
         return false;
       }
-      if (filter.featureWifi && !isFeatureTurnedOn(post.offer.features, filter.featureWifi)) {
-        return false;
-      }
-      if (filter.featureDishwasher && !isFeatureTurnedOn(post.offer.features, filter.featureDishwasher)) {
-        return false;
-      }
-      if (filter.featureParking && !isFeatureTurnedOn(post.offer.features, filter.featureParking)) {
-        return false;
-      }
-      if (filter.featureWasher && !isFeatureTurnedOn(post.offer.features, filter.featureWasher)) {
-        return false;
-      }
-      if (filter.featureElevator && !isFeatureTurnedOn(post.offer.features, filter.featureElevator)) {
-        return false;
-      }
-      if (filter.featureConditioner && !isFeatureTurnedOn(post.offer.features, filter.featureConditioner)) {
-        return false;
+
+      for (var featureName in filter) {
+        if (featureName.search('feature') >= 0) {
+          if (filter[featureName] && !isFeatureTurnedOn(post.offer.features, filter[featureName])) {
+            return false;
+          }
+        }
       }
 
       return true;

@@ -7,15 +7,17 @@
     var MAP_PIN_CLASS = 'map__pin';
     var MAP_PIN_MAIN_CLASS = 'map__pin--main';
 
-
     pins.addEventListener('click', function (e) {
       var target = e.target;
-      if (target.closest('.' + MAP_PIN_MAIN_CLASS)) {
-        return;
-      } else if (target.closest('.' + MAP_PIN_CLASS)) {
+
+      if (target.tagName.toLowerCase() === 'img') {
         target = target.parentNode;
-        processPin(target, postData);
       }
+      if (!target.classList.contains(MAP_PIN_CLASS)
+      || target.classList.contains(MAP_PIN_MAIN_CLASS)) {
+        return;
+      }
+      processPin(target, postData);
     });
 
     pins.addEventListener('keydown', function (e) {
