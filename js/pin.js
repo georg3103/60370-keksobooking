@@ -12,31 +12,17 @@ window.pin = (function () {
   };
 
   var filter = {
-    housingType: null,
-    housingPrice: null,
-    housingRooms: null,
-    housingGuests: null,
-    featureWifi: null,
-    featureDishwasher: null,
-    featureParking: null,
-    featureWasher: null,
-    featureElevator: null,
-    featureConditioner: null
+    'housing-type': null,
+    'housing-price': null,
+    'housing-rooms': null,
+    'housing-guests': null,
+    'filter-wifi': null,
+    'filter-dishwasher': null,
+    'filter-parking': null,
+    'filter-washer': null,
+    'filter-elevator': null,
+    'filter-conditioner': null
   };
-
-  var FILTER_CASES = [
-    'housing-type',
-    'housing-price',
-    'housing-rooms',
-    'housing-guests',
-    'filter-wifi',
-    'filter-dishwasher',
-    'filter-parking',
-    'filter-washer',
-    'filter-elevator',
-    'filter-conditioner',
-  ];
-
 
   var getGeneratedPins = function (listOfOffers) {
 
@@ -99,6 +85,12 @@ window.pin = (function () {
     });
   };
 
+  /**
+   * Получить диапазон min/max по имени.
+   *
+   * @param {string} name
+   * @return {{min: number, max: number}}
+   */
   var getPriceRangeByName = function (name) {
     var min = 0;
     var max = 0;
@@ -126,6 +118,13 @@ window.pin = (function () {
     };
   };
 
+  /**
+   * Прайс находится в разрешенном диапазоне.
+   *
+   * @param {number} value price range name
+   * @param {number} price current price
+   * @return {boolean}
+   */
   var isHousingPriceWithingRange = function (value, price) {
     var priceRange = getPriceRangeByName(value);
     if (priceRange.min < 0 && priceRange.max < 0) {
@@ -138,46 +137,71 @@ window.pin = (function () {
     return (price >= priceRange.min && price <= priceRange.max);
   };
 
+  /**
+   * Фича включена?
+   *
+   * @param {Array} features An Массив с фичами
+   * @param {string} featureToCheck проверяемая фича
+   * @return {boolean}
+   */
   var isFeatureTurnedOn = function (features, featureToCheck) {
     return features.indexOf(featureToCheck) > -1;
   };
 
+  /**
+   * Отфильтровать пины по критериям.
+   *
+   * @param {Event} ev
+   * @return {Array}
+   */
   var getFilteredPins = function (ev) {
     var target = ev.target;
     var value = target.value;
 
     var posts = window.data.getOffersList();
 
-    var propNumber = 0;
-
     for (var key in filter) {
-      if ((target.id === FILTER_CASES[propNumber]) && key.search('feature') >= 0) {
-        filter[key] = target.checked ? value : null;
+      if (!filter.hasOwnProperty(key)) {
+        continue;
       }
-      if ((target.id === FILTER_CASES[propNumber])) {
+      if (target.id !== key) {
+        continue;
+      }
+      // для селектов
+      if (target.type === 'select-one') {
         filter[key] = value === 'any' ? null : value;
       }
-      propNumber++;
+      // для чекбоксов
+      if (target.type === 'checkbox') {
+        filter[key] = target.checked ? value : null;
+      }
     }
 
-    posts = posts.filter(function (post) {
-
-      if (filter.housingType && post.offer.type !== filter.housingType) {
-        return false;
-      }
-      if (filter.housingRooms && post.offer.rooms !== parseInt(filter.housingRooms, 10)) {
-        return false;
-      }
-      if (filter.housingPrice && !isHousingPriceWithingRange(filter.housingPrice, post.offer.price)) {
-        return false;
-      }
-      if (filter.housingGuests && post.offer.guests !== parseInt(filter.housingGuests, 10)) {
-        return false;
-      }
-
-      for (var featureName in filter) {
-        if (featureName.search('feature') >= 0) {
-          if (filter[featureName] && !isFeatureTurnedOn(post.offer.features, filter[featureName])) {
+    return posts.filter(function (post) {
+      for (var filterName in filter) {
+        if (!filter.hasOwnProperty(filterName)) {
+          continue;
+        }
+        var filterValue = filter[filterName];
+        if (!filterValue) {
+          continue;
+        }
+        // Фильтруем по чекбоксам
+        if (filterName.indexOf('filter-') > -1 && !isFeatureTurnedOn(post.offer.features, filterValue)) {
+          return false;
+        }
+        // Фильтруем по обычным селектовским фильтрам
+        if (filterName.indexOf('housing-') > -1) {
+          if (filterName === 'housing-type' && post.offer.type !== filterValue) {
+            return false;
+          }
+          if (filterName === 'housing-rooms' && post.offer.rooms !== parseInt(filterValue, 10)) {
+            return false;
+          }
+          if (filterName === 'housing-guests' && post.offer.guests !== parseInt(filterValue, 10)) {
+            return false;
+          }
+          if (filterName === 'housing-price' && !isHousingPriceWithingRange(filterValue, post.offer.price)) {
             return false;
           }
         }
@@ -185,7 +209,6 @@ window.pin = (function () {
 
       return true;
     });
-    return posts;
   };
 
   return {

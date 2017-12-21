@@ -93,7 +93,7 @@ window.maper = (function () {
     var posts = window.pin.getGeneratedPins(filteredPins);
 
     window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
-    window.showCard(posts, filteredPins);
+    window.showCard(pins, filteredPins);
   };
 
   pinFilters.addEventListener('change', function (ev) {
