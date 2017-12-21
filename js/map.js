@@ -43,7 +43,7 @@ window.map = (function () {
   };
 
   var fieldsetsStatus = function (element, flag) {
-    for (var i = 0; i < element.length; i++) { // foreach
+    for (var i = 0; i < element.length; i++) {
       if (flag === 'disabled') {
         element[i].setAttribute('disabled', 'disabled');
       } else if (flag === 'anable') {
@@ -90,7 +90,7 @@ window.map = (function () {
     maxY: LOCATION.Y.MAX - PIN_SIZES.height
   };
 
-  var syncFieldWithPin = function (x, y) { // по красоте если, то лучше первым параметром address передавать, чтобы не смотреть во внешнюю область видимости
+  var syncFieldWithPin = function (x, y) {
     address.value = 'x: ' + parseInt(x, 10) + ', y: ' + parseInt(y, 10);
   };
 

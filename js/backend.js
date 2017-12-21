@@ -113,7 +113,7 @@ window.backend = (function () {
     document.body.insertAdjacentElement('afterbegin', errorBlock);
 
     setTimeout(function () {
-      errorBlock.remove(); // remove не используем
+      errorBlock.remove();
     }, 3000);
   };
 
@@ -123,5 +123,4 @@ window.backend = (function () {
     error: error
   };
 
-})(); // ниже одна строчка
-
+})();

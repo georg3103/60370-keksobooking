@@ -7,16 +7,16 @@
 
   var type = document.querySelector('#type');
   var price = document.querySelector('#price');
-  var flatType = ['flat', 'bungalo', 'house', 'palace']; // types
-  var priceValues = ['1000', '0', '5000', '10000'];
+  var FLAT_TIPES = ['flat', 'bungalo', 'house', 'palace'];
+  var PRICE_VALUES = ['1000', '0', '5000', '10000'];
 
   var roomNumber = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
 
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  var timeInOptions = ['12:00', '13:00', '14:00'];
-  var timeOutOptions = ['12:00', '13:00', '14:00'];
+  var TIME_IN_OPTIONS = ['12:00', '13:00', '14:00'];
+  var TIME_OUT_OPTIONS = ['12:00', '13:00', '14:00'];
 
   var CAPACITY_NUMBER_VALIDATION = {
     rooms: [1, 2, 3, 100],
@@ -32,9 +32,9 @@
     element.min = value;
   };
 
-  window.synchronizeField(timeIn, timeOut, timeInOptions, timeOutOptions, syncValues);
-  window.synchronizeField(timeOut, timeIn, timeOutOptions, timeInOptions, syncValues);
-  window.synchronizeField(type, price, flatType, priceValues, syncPrices);
+  window.synchronizeField(timeIn, timeOut, TIME_IN_OPTIONS, TIME_OUT_OPTIONS, syncValues);
+  window.synchronizeField(timeOut, timeIn, TIME_OUT_OPTIONS, TIME_IN_OPTIONS, syncValues);
+  window.synchronizeField(type, price, FLAT_TIPES, PRICE_VALUES, syncPrices);
   window.synchronizeField(roomNumber, capacity, CAPACITY_NUMBER_VALIDATION.rooms, CAPACITY_NUMBER_VALIDATION.guests, window.synchronizeDisabledValues, true);
 
   var initValidators = function () {
@@ -102,12 +102,8 @@
     };
 
     var errorShow = function (element, revertChanges) {
-      revertChanges = revertChanges || false; // лишняя строка, у тебя и так будет преобразовано в false в условии
-      if (revertChanges) { // здесь нужно использовать тернарный оператор
-        element.style.border = '';
-        return;
-      }
-      element.style.border = '1px solid red';
+      var errorStyle = revertChanges ? element.style.border = '' : element.style.border = '1px solid red';
+      return errorStyle;
     };
 
   };
@@ -123,7 +119,7 @@
 
     window.backend.save(new FormData(noticeForm), function () {
       noticeForm.reset();
-    }, window.backend.error); // функцию error нужно положить в utils
+    }, window.util.error);
   });
 
   noticeForm.addEventListener('change', function (event) {
@@ -133,7 +129,7 @@
   });
 
   var formValidator = function () {
-    for (var i = 0; i < noticeForm.length; i++) { // noticeForm.some
+    for (var i = 0; i < noticeForm.length; i++) {
       if (noticeForm.elements[i].checkValidity()) {
         return false;
       }
@@ -142,7 +138,7 @@
   };
 
   var addInvalid = function (array) {
-    for (var i = 0; i < array.length; i++) { // array.foreach
+    for (var i = 0; i < array.length; i++) {
       if (!array[i].validity.valid) {
         array[i].style.border = '2px solid red';
       }
