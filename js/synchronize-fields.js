@@ -3,7 +3,7 @@
 (function () {
   window.synchronizeField = function (changedElement, dependentElement, changedValues, dependentValues, callback, runOnInit) {
     var changeEventHandler = function () {
-      for (var i = 0; i < changedValues.length; i++) {
+      for (var i = 0; i < changedValues.length; i++) { // forEach
         if (changedElement.value === changedValues[i].toString()) {
           callback(dependentElement, dependentValues[i]);
           return;

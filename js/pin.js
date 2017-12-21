@@ -27,7 +27,7 @@ window.pin = (function () {
 
     var offers = listOfOffers;
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < offers.length; i++) {
+    for (var i = 0; i < offers.length; i++) { // foreach
       var newButton = document.createElement('button');
       newButton.style.left = offers[i].location.x + 'px';
       newButton.style.top = offers[i].location.y + 'px';
@@ -70,10 +70,10 @@ window.pin = (function () {
 
   var removePin = function (pin) {
     if (pin.classList.contains(MAP_PIN_CLASS)) {
-      if (pin.classList.contains(MAP_PIN_MAIN_CLASS)) {
+      if (pin.classList.contains(MAP_PIN_MAIN_CLASS)) { // инвертируй выражение в условии, чтобы избавиться от return, а вообще это можно в одно условие с верхним записать
         return;
       } else {
-        pin.remove();
+        pin.remove(); // не используем remove
       }
     }
   };
@@ -120,7 +120,7 @@ window.pin = (function () {
       return true;
     }
 
-    return (price >= priceRange.min && price <= priceRange.max);
+    return (price >= priceRange.min && price <= priceRange.max); // лишние скобки
   };
 
   var isFeatureTurnedOn = function (features, featureToCheck) {

@@ -11,8 +11,8 @@ window.data = (function () {
   };
 
   var setOffers = function (data, isFilteredOffers) {
-    if (data.constructor !== Array) {
-      return;
+    if (data.constructor !== Array) {  // тут по-другому сделай, словил ошибку, но не смог воспроизвести
+      return; // замени return на data = [];
     }
     if (isFilteredOffers) {
       offers.filtered = data;

@@ -7,7 +7,7 @@
 
   var type = document.querySelector('#type');
   var price = document.querySelector('#price');
-  var flatType = ['flat', 'bungalo', 'house', 'palace'];
+  var flatType = ['flat', 'bungalo', 'house', 'palace']; // types
   var priceValues = ['1000', '0', '5000', '10000'];
 
   var roomNumber = document.querySelector('#room_number');
@@ -102,8 +102,8 @@
     };
 
     var errorShow = function (element, revertChanges) {
-      revertChanges = revertChanges || false;
-      if (revertChanges) {
+      revertChanges = revertChanges || false; // лишняя строка, у тебя и так будет преобразовано в false в условии
+      if (revertChanges) { // здесь нужно использовать тернарный оператор
         element.style.border = '';
         return;
       }
@@ -123,7 +123,7 @@
 
     window.backend.save(new FormData(noticeForm), function () {
       noticeForm.reset();
-    }, window.backend.error);
+    }, window.backend.error); // функцию error нужно положить в utils
   });
 
   noticeForm.addEventListener('change', function (event) {
@@ -133,7 +133,7 @@
   });
 
   var formValidator = function () {
-    for (var i = 0; i < noticeForm.length; i++) {
+    for (var i = 0; i < noticeForm.length; i++) { // noticeForm.some
       if (noticeForm.elements[i].checkValidity()) {
         return false;
       }
@@ -142,7 +142,7 @@
   };
 
   var addInvalid = function (array) {
-    for (var i = 0; i < array.length; i++) {
+    for (var i = 0; i < array.length; i++) { // array.foreach
       if (!array[i].validity.valid) {
         array[i].style.border = '2px solid red';
       }
