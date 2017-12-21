@@ -2,17 +2,15 @@
 
 window.data = (function () {
   var offers = {
-    /** Нормальные офферы */
-    normal: [],
-    /** Отфильтрованные */
+    all: [],
     filtered: []
   };
 
-  var setFilteredOffers = function(data) {
+  var setFilteredOffers = function (data) {
     setOffers(data, true);
   };
 
-  var setOffers = function(data, isFilteredOffers) {
+  var setOffers = function (data, isFilteredOffers) {
     if (data.constructor !== Array) {
       return;
     }
@@ -21,11 +19,11 @@ window.data = (function () {
 
       return;
     }
-    offers.normal = data;
+    offers.all = data;
   };
 
   var getOffers = function () {
-    return offers.normal.slice();
+    return offers.all.slice();
   };
 
   var getFilteredOffers = function () {
@@ -33,7 +31,7 @@ window.data = (function () {
   };
 
   var findPinById = function (pin) {
-    var offers = getFilteredOffers();
+    offers = getFilteredOffers();
     var pinId = parseInt(pin.dataset.pinId, 10);
 
     if (!offers[pinId]) {

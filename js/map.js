@@ -72,15 +72,15 @@ window.map = (function () {
     element.classList.remove('notice__form--disabled');
   };
 
-  var reRenderPins = function(event) {
-    return function() {
+  var reRenderPins = function (event) {
+    return function () {
       var filteredPosts = window.pin.getFilteredPosts(event);
       var newPins = window.pin.getGeneratedPins(filteredPosts);
 
       window.pin.removePins(pins);
       window.pin.addPinsToMap(newPins, MAP_PINS_CLASS);
       window.data.setFilteredOffers(filteredPosts);
-    }
+    };
   };
 
   var dragPinLimits = {
@@ -188,6 +188,6 @@ window.map = (function () {
   return {
     mapContainer: map,
     pinsContainer: pins
-  }
+  };
 
 })();

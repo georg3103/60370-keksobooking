@@ -84,12 +84,6 @@ window.pin = (function () {
     });
   };
 
-  /**
-   * Получить диапазон min/max по имени.
-   *
-   * @param {string} name
-   * @return {{min: number, max: number}}
-   */
   var getPriceRangeByName = function (name) {
     var min = 0;
     var max = 0;
@@ -117,13 +111,6 @@ window.pin = (function () {
     };
   };
 
-  /**
-   * Прайс находится в разрешенном диапазоне.
-   *
-   * @param {number} value price range name
-   * @param {number} price current price
-   * @return {boolean}
-   */
   var isHousingPriceWithingRange = function (value, price) {
     var priceRange = getPriceRangeByName(value);
     if (priceRange.min < 0 && priceRange.max < 0) {
@@ -136,23 +123,10 @@ window.pin = (function () {
     return (price >= priceRange.min && price <= priceRange.max);
   };
 
-  /**
-   * Фича включена?
-   *
-   * @param {Array} features An Массив с фичами
-   * @param {string} featureToCheck проверяемая фича
-   * @return {boolean}
-   */
   var isFeatureTurnedOn = function (features, featureToCheck) {
     return features.indexOf(featureToCheck) > -1;
   };
 
-  /**
-   * Отфильтровать пины по критериям.
-   *
-   * @param {Event} ev
-   * @return {Array}
-   */
   var getFilteredPins = function (ev) {
     var target = ev.target;
     var value = target.value;
@@ -160,17 +134,16 @@ window.pin = (function () {
     var posts = window.data.getOffers();
 
     for (var key in filter) {
+
       if (!filter.hasOwnProperty(key)) {
         continue;
       }
       if (target.id !== key) {
         continue;
       }
-      // для селектов
       if (target.type === 'select-one') {
         filter[key] = value === 'any' ? null : value;
       }
-      // для чекбоксов
       if (target.type === 'checkbox') {
         filter[key] = target.checked ? value : null;
       }
@@ -185,11 +158,9 @@ window.pin = (function () {
         if (!filterValue) {
           continue;
         }
-        // Фильтруем по чекбоксам
         if (filterName.indexOf('filter-') > -1 && !isFeatureTurnedOn(post.offer.features, filterValue)) {
           return false;
         }
-        // Фильтруем по обычным селектовским фильтрам
         if (filterName.indexOf('housing-') > -1) {
           if (filterName === 'housing-type' && post.offer.type !== filterValue) {
             return false;
