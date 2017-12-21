@@ -1,20 +1,52 @@
 'use strict';
 
 window.data = (function () {
+  var offers = {
+    all: [],
+    filtered: []
+  };
 
-  var getOffers = function (data) {
+  var setFilteredOffers = function (data) {
+    setOffers(data, true);
+  };
 
-    var offerList = [];
+  var setOffers = function (data, isFilteredOffers) {
+    if (data.constructor !== Array) {
+      return;
+    }
+    if (isFilteredOffers) {
+      offers.filtered = data;
 
-    if (offerList.constructor === Array) {
-      offerList = data;
+      return;
+    }
+    offers.all = data;
+  };
+
+  var getOffers = function () {
+    return offers.all.slice();
+  };
+
+  var getFilteredOffers = function () {
+    return offers.filtered.slice();
+  };
+
+  var findPinById = function (pin) {
+    offers = getFilteredOffers();
+    var pinId = parseInt(pin.dataset.pinId, 10);
+
+    if (!offers[pinId]) {
+      return -1;
     }
 
-    return offerList;
+    return offers[pinId];
   };
 
   return {
-    getOffers: getOffers
+    setOffers: setOffers,
+    getOffers: getOffers,
+    setFilteredOffers: setFilteredOffers,
+    getFilteredOffers: getFilteredOffers,
+    findPinById: findPinById
   };
 
 })();

@@ -1,7 +1,6 @@
 'use strict';
 
-window.maper = (function () {
-
+window.map = (function () {
   var LOCATION = {
     X: {
       MIN: 300,
@@ -19,22 +18,24 @@ window.maper = (function () {
   };
 
   var MAP_PINS_CLASS = '.map__pins';
+  var MAP_PIN_CLASS = 'map__pin';
+  var MAP_PIN_MAIN_CLASS = 'map__pin--main';
 
   var map = document.querySelector('.map');
   var form = document.querySelector('.notice__form');
   var fieldset = document.querySelectorAll('fieldset');
   var pinMain = map.querySelector('.map__pin--main');
   var pins = map.querySelector('.map__pins');
-
+  var pinFilters = document.querySelector('.map__filters');
   var address = document.querySelector('#address');
 
   var getData = function (data) {
+    window.data.setOffers(data);
+    window.data.setFilteredOffers(data);
 
-    var offerData = window.data.getOffers(data);
+    var posts = window.pin.getGeneratedPins(window.data.getOffers());
 
-    pinsAdd(offerData);
-
-    window.showCard(pins, offerData);
+    window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
   };
 
   var mapIsFaded = function (element) {
@@ -51,12 +52,7 @@ window.maper = (function () {
     }
   };
 
-  mapIsFaded(map);
-
-  fieldsetsStatus(fieldset, 'disabled');
-
   function mouseupHandler() {
-
     mapIsActive(map);
 
     window.backend.load(getData, window.backend.error);
@@ -68,8 +64,6 @@ window.maper = (function () {
     pinMain.removeEventListener('mouseup', mouseupHandler);
   }
 
-  pinMain.addEventListener('mouseup', mouseupHandler);
-
   var mapIsActive = function (element) {
     element.classList.remove('map--faded');
   };
@@ -78,13 +72,15 @@ window.maper = (function () {
     element.classList.remove('notice__form--disabled');
   };
 
-  function showPins(data) {
-    var posts = window.pin.getGeneratedPins(data);
-    window.pin.addPinsToMap(posts, MAP_PINS_CLASS);
-  }
+  var reRenderPins = function (event) {
+    return function () {
+      var filteredPosts = window.pin.getFilteredPosts(event);
+      var newPins = window.pin.getGeneratedPins(filteredPosts);
 
-  var pinsAdd = function (data) {
-    showPins(data);
+      window.pin.removePins(pins);
+      window.pin.addPinsToMap(newPins, MAP_PINS_CLASS);
+      window.data.setFilteredOffers(filteredPosts);
+    };
   };
 
   var dragPinLimits = {
@@ -106,6 +102,20 @@ window.maper = (function () {
     pinMain.style.left = x + 'px';
     pinMain.style.top = y + 'px';
     pinMain.style.zIndex = '10';
+  };
+
+  var processPin = function (pin) {
+    window.pin.deactivatePins(pins);
+    window.card.removePopups(pins);
+    window.pin.activatePin(pin);
+    window.showCard.addCartToMap(window.data.findPinById(pin), MAP_PINS_CLASS);
+  };
+
+  var pinClickHandler = function (e) {
+    var pinNode = e.target;
+    if (pinNode.classList.contains(MAP_PIN_CLASS)) {
+      processPin(pinNode);
+    }
   };
 
   pinMain.addEventListener('mousedown', function (evt) {
@@ -147,5 +157,37 @@ window.maper = (function () {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  pins.addEventListener('keydown', function (e) {
+    if (window.util.isKeyboardEnterKey(e)) {
+      pinClickHandler(e);
+    }
+  });
+
+  pins.addEventListener('click', function (e) {
+    var target = e.target;
+
+    if (target.tagName.toLowerCase() === 'img') {
+      target = target.parentNode;
+    }
+    if (!target.classList.contains(MAP_PIN_CLASS)
+      || target.classList.contains(MAP_PIN_MAIN_CLASS)) {
+      return;
+    }
+
+    processPin(target);
+  });
+
+  mapIsFaded(map);
+  fieldsetsStatus(fieldset, 'disabled');
+  pinMain.addEventListener('mouseup', mouseupHandler);
+  pinFilters.addEventListener('change', function (ev) {
+    window.util.debounce(reRenderPins(ev), 10);
+  });
+
+  return {
+    mapContainer: map,
+    pinsContainer: pins
+  };
 
 })();
