@@ -1,25 +1,54 @@
 'use strict';
 
 window.data = (function () {
-
-  var offerList = [];
-
-  var getOffers = function (data) {
-
-    if (offerList.constructor === Array) {
-      offerList = data;
-    }
-
-    return offerList;
+  var offers = {
+    /** Нормальные офферы */
+    normal: [],
+    /** Отфильтрованные */
+    filtered: []
   };
 
-  var getOffersList = function () {
-    return offerList.slice();
+  var setFilteredOffers = function(data) {
+    setOffers(data, true);
+  };
+
+  var setOffers = function(data, isFilteredOffers) {
+    if (data.constructor !== Array) {
+      return;
+    }
+    if (isFilteredOffers) {
+      offers.filtered = data;
+
+      return;
+    }
+    offers.normal = data;
+  };
+
+  var getOffers = function () {
+    return offers.normal.slice();
+  };
+
+  var getFilteredOffers = function () {
+    return offers.filtered.slice();
+  };
+
+  var findPinById = function (pin) {
+    var offers = getFilteredOffers();
+    var pinId = parseInt(pin.dataset.pinId, 10);
+
+    if (!offers[pinId]) {
+      return -1;
+    }
+
+    return offers[pinId];
   };
 
   return {
+    setOffers: setOffers,
     getOffers: getOffers,
-    getOffersList: getOffersList
+    setFilteredOffers: setFilteredOffers,
+    getFilteredOffers: getFilteredOffers,
+    findPinById: findPinById
   };
 
 })();

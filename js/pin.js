@@ -1,7 +1,6 @@
 'use strict';
 
 window.pin = (function () {
-
   var MAP_PIN_CLASS = 'map__pin';
   var MAP_PIN_ACTIVE_CLASS = 'map__pin--active';
   var MAP_PIN_MAIN_CLASS = 'map__pin--main';
@@ -158,7 +157,7 @@ window.pin = (function () {
     var target = ev.target;
     var value = target.value;
 
-    var posts = window.data.getOffersList();
+    var posts = window.data.getOffers();
 
     for (var key in filter) {
       if (!filter.hasOwnProperty(key)) {
@@ -217,7 +216,7 @@ window.pin = (function () {
     activatePin: activatePin,
     deactivatePins: deactivatePins,
     removePins: removePins,
-    getFilteredPins: getFilteredPins
+    getFilteredPosts: getFilteredPins
   };
 
 })();
