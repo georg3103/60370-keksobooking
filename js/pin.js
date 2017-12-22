@@ -10,6 +10,8 @@ window.pin = (function () {
     HEIGHT: 40
   };
 
+  var MAX_ITEMS_LIMIT = 5;
+
   var filter = {
     'housing-type': null,
     'housing-price': null,
@@ -25,9 +27,10 @@ window.pin = (function () {
 
   var getGeneratedPins = function (listOfOffers) {
 
-    var offers = listOfOffers;
+    var offers = listOfOffers.slice(0, MAX_ITEMS_LIMIT);
+
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < offers.length; i++) { // foreach
+    for (var i = 0; i < offers.length; i++) {
       var newButton = document.createElement('button');
       newButton.style.left = offers[i].location.x + 'px';
       newButton.style.top = offers[i].location.y + 'px';
@@ -70,10 +73,10 @@ window.pin = (function () {
 
   var removePin = function (pin) {
     if (pin.classList.contains(MAP_PIN_CLASS)) {
-      if (pin.classList.contains(MAP_PIN_MAIN_CLASS)) { // инвертируй выражение в условии, чтобы избавиться от return, а вообще это можно в одно условие с верхним записать
+      if (pin.classList.contains(MAP_PIN_MAIN_CLASS)) {
         return;
       } else {
-        pin.remove(); // не используем remove
+        pin.remove();
       }
     }
   };
@@ -120,7 +123,7 @@ window.pin = (function () {
       return true;
     }
 
-    return (price >= priceRange.min && price <= priceRange.max); // лишние скобки
+    return (price >= priceRange.min && price <= priceRange.max);
   };
 
   var isFeatureTurnedOn = function (features, featureToCheck) {
@@ -134,16 +137,17 @@ window.pin = (function () {
     var posts = window.data.getOffers();
 
     for (var key in filter) {
-
       if (!filter.hasOwnProperty(key)) {
         continue;
       }
       if (target.id !== key) {
         continue;
       }
+
       if (target.type === 'select-one') {
         filter[key] = value === 'any' ? null : value;
       }
+
       if (target.type === 'checkbox') {
         filter[key] = target.checked ? value : null;
       }

@@ -11,9 +11,9 @@ window.card = (function () {
 
   var generateFeatures = function (itemFeatureList) {
     var listOfli = '';
-    for (var i = 0; i <= itemFeatureList.length - 1; i++) { // давай здесь использовать forEach
-      listOfli += '<li class="feature feature--' + itemFeatureList[i] + '"></li>';
-    }
+    itemFeatureList.forEach(function (element) {
+      listOfli += '<li class="feature feature--' + element + '"></li>';
+    });
     return listOfli;
   };
 

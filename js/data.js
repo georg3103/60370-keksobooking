@@ -11,8 +11,8 @@ window.data = (function () {
   };
 
   var setOffers = function (data, isFilteredOffers) {
-    if (data.constructor !== Array) {  // тут по-другому сделай, словил ошибку, но не смог воспроизвести
-      return; // замени return на data = [];
+    if (data.constructor !== Array) {
+      data = [];
     }
     if (isFilteredOffers) {
       offers.filtered = data;
@@ -31,14 +31,14 @@ window.data = (function () {
   };
 
   var findPinById = function (pin) {
-    offers = getFilteredOffers();
+    var gilteredOffers = getFilteredOffers();
     var pinId = parseInt(pin.dataset.pinId, 10);
 
-    if (!offers[pinId]) {
+    if (!gilteredOffers[pinId]) {
       return -1;
     }
 
-    return offers[pinId];
+    return gilteredOffers[pinId];
   };
 
   return {
