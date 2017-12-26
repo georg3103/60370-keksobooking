@@ -90,8 +90,8 @@ window.map = (function () {
     maxY: LOCATION.Y.MAX - PIN_SIZES.height
   };
 
-  var syncFieldWithPin = function (x, y) {
-    address.value = 'x: ' + parseInt(x, 10) + ', y: ' + parseInt(y, 10);
+  var syncFieldWithPin = function (target, x, y) {
+    target.value = 'x: ' + parseInt(x, 10) + ', y: ' + parseInt(y, 10);
   };
 
   var checkLimit = function (number, limitMin, limitMax) {
@@ -143,7 +143,7 @@ window.map = (function () {
       var newY = checkLimit(mainPinCoords.y - shift.y, dragPinLimits.minY, dragPinLimits.maxY);
 
       setMainPinCoordinates(newX, newY);
-      syncFieldWithPin(newX, newY + PIN_SIZES.height);
+      syncFieldWithPin(address, newX, newY + PIN_SIZES.height);
 
     };
 

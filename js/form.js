@@ -3,6 +3,7 @@
 (function () {
 
   var noticeForm = document.querySelector('.notice__form');
+  var submitButton = document.querySelector('.form__submit');
   var title = document.querySelector('#title');
 
   var type = document.querySelector('#type');
@@ -110,12 +111,15 @@
 
   initValidators();
 
-  noticeForm.addEventListener('submit', function (event) {
+  submitButton.addEventListener('click', function (event) {
     event.preventDefault();
-
     if (!formValidator()) {
       addInvalid(noticeForm.elements);
     }
+  });
+
+  noticeForm.addEventListener('submit', function (event) {
+    event.preventDefault();
 
     window.backend.save(new FormData(noticeForm), function () {
       noticeForm.reset();
@@ -128,21 +132,22 @@
     }
   });
 
+  var isValid = function (element) {
+    return element.checkValidity();
+  };
+
   var formValidator = function () {
-    for (var i = 0; i < noticeForm.length; i++) {
-      if (noticeForm.elements[i].checkValidity()) {
-        return false;
-      }
+    Array.from(noticeForm).some(isValid);
+  };
+
+  var addBorder = function (element) {
+    if (!element.validity.valid) {
+      element.style.border = '3px solid red';
     }
-    return true;
   };
 
   var addInvalid = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      if (!array[i].validity.valid) {
-        array[i].style.border = '2px solid red';
-      }
-    }
+    Array.from(array).forEach(addBorder);
   };
 
 })();

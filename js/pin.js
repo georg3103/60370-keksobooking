@@ -30,23 +30,23 @@ window.pin = (function () {
     var offers = listOfOffers.slice(0, MAX_ITEMS_LIMIT);
 
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < offers.length; i++) {
+
+    offers.forEach(function (element, index) {
       var newButton = document.createElement('button');
-      newButton.style.left = offers[i].location.x + 'px';
-      newButton.style.top = offers[i].location.y + 'px';
+      newButton.style.left = element.location.x + 'px';
+      newButton.style.top = element.location.y + 'px';
       newButton.className = MAP_PIN_CLASS;
 
-      newButton.dataset.pinId = i;
-
+      newButton.dataset.pinId = index;
 
       var pinImage = document.createElement('img');
-      pinImage.src = offers[i].author.avatar;
+      pinImage.src = element.author.avatar;
       pinImage.style.width = PIN_SIZE.WIDTH + 'px';
       pinImage.style.height = PIN_SIZE.HEIGHT + 'px';
       pinImage.setAttribute('draggable', false);
       newButton.appendChild(pinImage);
       fragment.appendChild(newButton);
-    }
+    });
     return fragment;
   };
 
@@ -123,7 +123,7 @@ window.pin = (function () {
       return true;
     }
 
-    return (price >= priceRange.min && price <= priceRange.max);
+    return price >= priceRange.min && price <= priceRange.max;
   };
 
   var isFeatureTurnedOn = function (features, featureToCheck) {

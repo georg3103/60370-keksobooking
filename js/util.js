@@ -28,10 +28,16 @@ window.util = (function () {
     }, interval);
   };
 
+  var removeElement = function (elementId) {
+    var element = document.getElementById(elementId);
+    element.parentNode.removeChild(element);
+  };
+
   return {
     isKeyboardEnterKey: isKeyboardEnterKey,
     isKeyboardEscKey: isKeyboardEscKey,
-    debounce: debounce
+    debounce: debounce,
+    removeElement: removeElement
   };
 
 })();

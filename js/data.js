@@ -11,7 +11,7 @@ window.data = (function () {
   };
 
   var setOffers = function (data, isFilteredOffers) {
-    if (data.constructor !== Array) {
+    if (data.constructor !== Array) { // словил ошибку, но не смог воспроизвести + НАДО ПРАВИТЬ
       data = [];
     }
     if (isFilteredOffers) {

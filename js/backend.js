@@ -113,7 +113,7 @@ window.backend = (function () {
     document.body.insertAdjacentElement('afterbegin', errorBlock);
 
     setTimeout(function () {
-      errorBlock.remove();
+      window.util.removeElement('serverStatus');
     }, 3000);
   };
 
